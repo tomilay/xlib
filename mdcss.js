@@ -7,7 +7,8 @@
 //************************************************************************ 		
 (function(o) {
 	var doc = window.document;
-	var rspace = /\s+/;
+	var rclass = /[\n\t\r]/g,
+		rspace = /\s+/;
 
 	var e = {
 		addClass: function( value ) {
@@ -37,7 +38,7 @@
 								setClass += classNames[ c ] + " ";
 							}
 						}
-						elem.className = setClass.trim();
+						elem.className = x$.trim(setClass);
 					}
 				}
 			}
@@ -65,7 +66,7 @@
 						for ( c = 0, cl = classNames.length; c < cl; c++ ) {
 							className = className.replace(" " + classNames[ c ] + " ", " ");
 						}
-						elem.className = className.trim();
+						elem.className = x$.trim(className);
 
 					} else {
 						elem.className = "";

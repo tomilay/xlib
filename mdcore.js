@@ -31,6 +31,9 @@ if (typeof Object.create !== 'function') {
 	// Matches dashed string for camelizing
 	rdashAlpha = /-([a-z]|[0-9])/ig,
 	rmsPrefix = /^-ms-/,
+	trim = String.prototype.trim,
+	trimLeft = /^\s+/,
+	trimRight = /\s+$/,
 
 	// Used by x$.camelCase as callback to replace()
 	fcamelCase = function( all, letter ) {
@@ -339,7 +342,13 @@ if (typeof Object.create !== 'function') {
 			// ************************************************************************
 			bind: function( type, handler ) {
 				if( this.elem ) {
-					x$.bind( this.elem, type, handler );
+					if ( x$.isArray(this.elem) ) {
+						this.each(function(iter, value){
+							x$.bind( value, type, handler );
+						}, false);
+					} else {
+						x$.bind( this.elem, type, handler );
+					}
 				}
 			},
 
@@ -355,7 +364,13 @@ if (typeof Object.create !== 'function') {
 			// ************************************************************************
 			unbindHandler: function( type, handler ) {
 				if( this.elem ) {
-					x$.unbindHandler( this.elem, type, handler );
+					if ( x$.isArray(this.elem) ) {
+						this.each(function(iter, value){
+							x$.unbindHandler( value, type, handler );
+						}, false);
+					} else {
+						x$.unbindHandler( this.elem, type, handler );
+					}
 				}
 			},
 
@@ -568,6 +583,13 @@ if (typeof Object.create !== 'function') {
 		}
 		return o;
 	};
+
+	// ************************************************************************
+	// CLONE OBJECT USING QUICK AND DIRTY JSON.parse AND JSON.stringify
+	// ************************************************************************
+	x$.clone = function ( o ) {
+		return JSON.parse( JSON.stringify(o) );
+	};
 	
 	// ************************************************************************
 	// EXPOSE THE f$.prototype TO FACILITATE EXTENSIBILITY
@@ -591,6 +613,67 @@ if (typeof Object.create !== 'function') {
 	// Convert dashed to camelCase; presently used by the data module
 	x$.camelCase = function( string ) {
 		return string.replace( rmsPrefix, "ms-" ).replace( rdashAlpha, fcamelCase );
+	};
+
+	// ************************************************************************
+	// TRIM A STRING - USES EXISTING FUNCTIONALITY IF IT EXISTS
+	// ************************************************************************
+	x$.trim =  trim ?
+		function( text ) {
+			return text == null ?
+				"" :
+				trim.call( text );
+		} :
+
+		// Otherwise use our own trimming functionality
+		function( text ) {
+			return text == null ?
+				"" :
+				text.toString().replace( trimLeft, "" ).replace( trimRight, "" );
+		};
+
+	// ************************************************************************
+	// MAP FUNCTION - MAP A FUNCTION TO A CONTAINER(ARRAY, OBJECT)
+	// ************************************************************************
+	x$.map = function ( obj, func ) {
+		var result = x$.isArray(obj) ? new Array():
+			{};
+
+		x$.each( obj, function( iter, value ) {
+			result[ iter ] = func( value );
+		}, false );
+
+		return result;
+	};
+
+	// ************************************************************************
+	// FILTER FUNCTION - FILTER A CONTAINER(ARRAY...) ACCORDING TO A FUNCTION
+	// ************************************************************************
+	x$.filter = function ( obj, func ) {
+		// This function currently only works for arrays.  
+		var result = x$.isArray( obj ) ? obj.slice( 0 ):
+			x$.clone( obj ),
+			idx = 0;
+
+		x$.each( obj, function( iter, value ) {
+			if ( x$.isArray(obj) ) { //}
+				var val = func( value );
+
+				if ( ! val ) {
+					result.splice( idx, 1 );
+				} else {
+					idx += 1;
+				}
+			} else {
+				var val = func( value );
+
+				if ( ! val ) {
+					delete result[ iter ];
+				}
+			}
+		}, false );
+
+		return result;
 	};
 
 	// ************************************************************************
