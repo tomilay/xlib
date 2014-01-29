@@ -1,0 +1,77 @@
+
+	body {
+		font:1.0em verdana, arial, sans-serif;
+	}
+
+	* {
+		margin:0;
+		padding:0;
+	}
+
+	div#listmenu {
+		width:250px;
+		margin-top:20px;
+		margin-left:30px;
+		font-size:.9em;
+	}
+
+	/* Anchor inside a div with id = listmenu */
+	div#listmenu a {
+		display:block;
+		padding:0 6px;
+		text-decoration:none;
+		color:#5f605f;
+	}
+
+	div#listmenu a:hover {
+		color:#f33;
+	}
+
+	/* list element of first level unordered list */
+	div#listmenu>ul>li {
+		text-transform:uppercase;
+	}
+
+	/* All list elements */
+	div#listmenu li {
+		list-style-type:none;
+		background-color:#e7e9e6;
+		text-transform:none;
+		font-variant:small-caps;
+		border-bottom:1px solid #d9d9d3;
+	}
+
+	/* All list elements hover*/
+	div#listmenu li:hover {
+		background-color:#fff;
+	}
+
+	/* Second level unordered list */
+	div#listmenu ul li ul {
+		font-size:.95em;
+		display:none;
+	}
+
+	div#listmenu ul li ul.visib {
+		display:block;
+		background-color:blue;
+	}
+	
+	div#listmenu ul li ul li>a {
+		padding-left:10px;
+	}
+
+	/* Third level unordered list */
+	div#listmenu ul li ul li ul {
+		font-size:.95em;
+		display:none;
+	}
+
+	div#listmenu ul li ul li ul li>a {
+		padding-left:20px;
+	}
+
+	div#listmenu ul li ul.visib {
+		display:block;
+		background-color:blue;
+	}
