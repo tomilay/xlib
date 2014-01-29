@@ -1,3 +1,13 @@
+//************************************************************************ 
+//        EXTEND x$ TO SUPPORT TEMPLATING
+//        
+//         Supported browsers: IE8, Chrome, FireFox, Safari, Opera
+// 
+//         Dependency: mdcore.js
+//        
+//        This module permits a qweb designer to create templates
+//        that will bind to data-sets or models
+//************************************************************************  
 (function(o) {
 	// This static variable will hold all current templates.  
 	var arrTemplates = [];
