@@ -7,7 +7,7 @@
 //************************************************************************ 		
 (function(o) {
 
-	var hasChildren = function( listNode ) {
+	var setHandler = function( listNode ) {
 		 var ulNode = x$(">ul", listNode).getNode();
 
 		 if( ulNode !== undefined ) {
@@ -47,7 +47,7 @@
 				li = x$( "li" ).getNode();
 
 				for( i = 0; i < li.length; i++ ) {
-					hasChildren( li[ i ] );
+					setHandler( li[ i ] );
 				}
 			}
 
