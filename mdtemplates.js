@@ -3,7 +3,7 @@
 //        
 //         Supported browsers: IE8, Chrome, FireFox, Safari, Opera
 // 
-//         Dependency: mdcore.js
+//         Dependency: mdcore.js, mdinputs.js
 //        
 //        This module permits a qweb designer to create templates
 //        that will bind to data-sets or models
