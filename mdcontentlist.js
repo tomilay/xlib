@@ -3,7 +3,7 @@
 //	
 // 	Supported browsers: IE8, Chrome, FireFox, Safari, Opera
 // 
-// Dependency: mdcore.js, mdcss.js
+// Dependency: mdcore.js, mdarray.js, mdtemplates.js
 //************************************************************************ 		
 (function(o) {
 
