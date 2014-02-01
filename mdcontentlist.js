@@ -3,7 +3,7 @@
 //	
 // 	Supported browsers: IE8, Chrome, FireFox, Safari, Opera
 // 
-// Dependency: mdcore.js, mdcss.js
+// Dependency: mdcore.js, mdarray.js, mdtemplates.js
 //************************************************************************ 		
 (function(o) {
 
@@ -28,12 +28,6 @@
 			_data.next( _size );
 		}
 
-		alert( "current page:"+_data.currentPage() 
-			+ "\nrows on page:" + _data.rowsOnCurrent()
-			+ "\ntotal pages:" + _data.totalPages() 
-			+ "\ntotal rows:" + _data.totalRows()
-			+ "\npage size:" + _data.pageSize());
-		
 		// Update display with the current data
 		_listing.applyBindings( _data.current() );
 
