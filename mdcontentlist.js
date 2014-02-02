@@ -24,18 +24,19 @@
 			,cl = x$( ".contentnavlast", this.elem );
 
 		
-		var _listing = x$( ">div.contentarea>ul>li", this.elem );
-
-		var _size = options.size ? options.size 
-				: 0;
+		var _listing = x$( ">div.contentarea>ul>li", this.elem )
+			,_size = options.size ? options.size : 0;
 
 		if ( _size < 0 ) _size = 0;
 
 		var _data = x$( data ).initArray( _size );
-
+		
+		if ( options.pages ) {
+			options.pages.applyBindings({ currentPage:_data.currentPage( ), totalPages:_data.totalPages( ) });
+		}
 		_listing.applyBindings( _data.current() );
 
-		var movePointer = function ( evt ) {
+		function movePointer ( evt ) {
 			var self = evt ? evt.currentTarget : this;
 
 			switch( self.className ) {
@@ -53,6 +54,9 @@
 					break;
 			}
 
+			if ( options.pages ) {
+				options.pages.applyBindings({ currentPage:_data.currentPage( ), totalPages:_data.totalPages( ) });
+			}
 			// Update display with the current data
 			_listing.applyBindings( _data.current() );
 

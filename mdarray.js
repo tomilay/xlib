@@ -20,7 +20,7 @@
 
 	function totalPages( totalSize, pageSize) {
 
-		return ( Math.floor( totalSize / pageSize ) + ( ( totalSize % pageSize ) > 0 ? 1 : 0 ) )
+		return ( Math.floor(totalSize / pageSize) + ((totalSize % pageSize) > 0 ? 1 : 0) )
 	}
 	
 	function rowsOnCurrentPage ( page, pageSize, totalSize ) {
@@ -32,8 +32,8 @@
 
 		if ( totPages > page ) {
 			rows = pageSize;
-		} else if ( totPages = page ) {
-			rows = pageSize - ( (totPages*pageSize) % totalSize );
+		} else if ( totPages === page ) {
+			rows = pageSize - ( (totPages * pageSize) % totalSize );
 		} 
 		return rows;
 	}
@@ -72,7 +72,7 @@
 		return curRow;
 	}
 
-	var e = new function() {
+	var e = new function( ) {
 		this._curRow = undefined
 			, this._pageSize = 0
 			, this._totalSize = undefined;
@@ -168,4 +168,4 @@
 	};
 
 	o.extend(o.fn, e);
-}(x$));
+}( x$ ));
