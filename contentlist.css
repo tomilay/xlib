@@ -1,0 +1,135 @@
+
+	body {
+		font:1.0em verdana, arial, sans-serif;
+	}
+
+	* {
+		margin:0;
+		padding:0;
+		border:0;
+	}
+
+	div.contentlist {
+		position:relative;
+		width:400px;
+		margin-top:20px;
+		font-size:.9em;
+		border:1px dotted black;
+	}
+
+	/* Anchor inside a div with class = contentlist */
+	div.contentlist a {
+		padding:0 6px;
+		text-decoration:none;
+		color:#5f605f;
+	}
+
+	div.contentlist a:hover {
+		color:#f33;
+	}
+
+	div.contentlist div.contentnavfirst {
+		float:left;
+	}
+
+	div.contentlist div.contentnavlast {
+		float:right;
+	}
+
+	div.contentlist div.contentnavnext {
+		float:right;
+	}
+
+	div.contentlist div.contentnavprev {
+		float:left;
+	}
+	div.contentlist div.contentnavfirst,
+	div.contentlist div.contentnavlast,
+	div.contentlist div.contentnavnext, 
+	div.contentlist div.contentnavprev
+	 {
+		background-color:#ccc;
+		cursor: pointer; 
+		margin:0px 2px 0px 2px;
+	}
+
+	/* list element of first level unordered list */
+	div.contentlist>ul>li {
+		text-transform:uppercase;
+	}
+
+	/* list element of first level unordered list */
+	div.contentlist>ul>li div.metadata {
+		border:1px dotted #ccc;
+		text-transform:lowercase;
+	}
+
+	div.contentlist>ul>li div.content {
+		border:1px dotted #ccc;
+		text-transform:lowercase;
+	}
+
+	/* All list elements */
+	div.contentlist li {
+		list-style-type:none;
+		background-color:#e7e9e6;
+		text-transform:none;
+		font-variant:small-caps;
+		border-bottom:1px solid #d9d9d3;
+	}
+
+	/* All list elements hover*/
+	div.contentlist li:hover {
+		background-color:#fff;
+	}
+
+	/* Second level unordered list */
+	div.contentlist ul li ul {
+		font-size:.95em;
+		display:none;
+	}
+
+	div.contentlist ul li ul.visib {
+		display:block;
+		background-color:blue;
+	}
+	
+	div.contentlist ul li ul li>a {
+		padding-left:10px;
+	}
+
+	/* Third level unordered list */
+	div.contentlist ul li ul li ul {
+		font-size:.95em;
+		display:none;
+	}
+
+	div.contentlist ul li ul li ul li>a {
+		padding-left:20px;
+	}
+
+	div.contentlist ul li ul.visib {
+		display:block;
+		background-color:blue;
+	}
+
+	.clearafter:after {
+		content:".";
+		display:block;
+		height:0;
+		clear:both;
+		visibility:hidden;
+	}
+
+	.clearbefore:before {
+		content:".";
+		display:block;
+		height:0;
+		clear:both;
+		visibility:hidden;
+	}
+	
+	.money:before {
+		content: "$";
+		display:inline;
+	}	
