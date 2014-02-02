@@ -7,54 +7,66 @@
 //************************************************************************ 		
 (function(o) {
 
-	var _data = undefined;
-	var _size = 1;
-	var _listing = undefined;
-
-	function stopBubble( e ) {
+	function stopBubble ( e ) {
 		if ( !e ) var e = window.event;
 		if ( e ) e.cancelBubble = true;
 		if ( e && e.stopPropagation ) e.stopPropagation();
 	}
 
-	var movePointer = function(evt) {
-		var self = evt ? evt.currentTarget : this;
+	var e = new function(){};
 
-		if( self.className === "contentnavprev" ){
-			// Move data pointer to the previous record
-			_data.previous( _size );
-		} else {
-			// Move data pointer to the next record
-			_data.next( _size );
-		}
+	// contentList takes an array of data
+	e.contentList = function( data, options ) {
 
-		// Update display with the current data
+		var cp = x$( ".contentnavprev", this.elem )
+			,cn = x$( ".contentnavnext", this.elem )
+			,cf = x$( ".contentnavfirst", this.elem )
+			,cl = x$( ".contentnavlast", this.elem );
+
+		
+		var _listing = x$( ">div.contentarea>ul>li", this.elem );
+
+		var _size = options.size ? options.size 
+				: 0;
+
+		if ( _size < 0 ) _size = 0;
+
+		var _data = x$( data ).initArray( _size );
+
 		_listing.applyBindings( _data.current() );
 
-		stopBubble( evt );
-	}
+		var movePointer = function ( evt ) {
+			var self = evt ? evt.currentTarget : this;
 
-	var e = {
-		// contentList takes an array of data
-		contentList: function( data, options ) {
+			switch( self.className ) {
+				case "contentnavprev":
+					_data.previous( _size );
+					break;
+				case "contentnavnext":
+					_data.next( _size );
+					break;
+				case "contentnavfirst":
+					_data.first( _size );
+					break;
+				case "contentnavlast":
+					_data.last( _size );
+					break;
+			}
 
-			var cp = x$(".contentnavprev", this.elem )
-				,cn  = x$(".contentnavnext", this.elem );
+			// Update display with the current data
+			_listing.applyBindings( _data.current() );
 
-			_listing = x$("#listing");
-
-			_data = x$( data );
-			_size = options.size ? options.size 
-					: _size;
-
-			_listing.applyBindings( _data.next( _size ).current() );
-
-			cp.getNode().onclick = movePointer;
-			cn.getNode().onclick = movePointer;
-
-			return this;
+			stopBubble( evt );
 		}
+
+		cp.getNode().onclick = movePointer;
+		cn.getNode().onclick = movePointer;
+		cf.getNode().onclick = movePointer;
+		cl.getNode().onclick = movePointer;
+
+		return this;
 	};
 
 	o.extend(o.fn, e);
 }(x$));
+		

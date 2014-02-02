@@ -7,108 +7,164 @@
 // Dependency: mdcore.js
 //************************************************************************ 		
 (function(o) {
-	var curRow = undefined;
-	var pageSize = 1;
 
 	function isArray( o ) {
 
 		return x$.isArray( o );
 	}
 
-	function updateCurRow( next, size ) {
+	function currentPage( row, size ) {
+		// ( CR % PS ) + ( CR div PS )
+		return ( (row+1) % size ) + Math.floor( (row+1) / size )
+	}
 
-		if ( isArray( this ) ) {
+	function totalPages( totalSize, pageSize) {
 
-			if ( !size ) {
-				size = 1;
-			}
+		return ( Math.floor( totalSize / pageSize ) + ( ( totalSize % pageSize ) > 0 ? 1 : 0 ) )
+	}
+	
+	function rowsOnCurrentPage ( page, pageSize, totalSize ) {
 
-			if ( curRow === undefined ) {
-				curRow = 0;
-			} else {
-				if( next ) {
-					if( curRow + size <= this.length -1 ) {
+		var rows = 0
+			,totPages = totalPages( totalSize, pageSize );
+
+		if ( page < 1 ) return 0;
+
+		if ( totPages > page ) {
+			rows = pageSize;
+		} else if ( totPages = page ) {
+			rows = pageSize - ( (totPages*pageSize) % totalSize );
+		} 
+		return rows;
+	}
+
+	function updateCurRow( curRow, next, size, totalSize ) {
+
+		if ( !size ) {
+			size = 1;
+		}
+
+		if ( curRow === undefined ) {
+			curRow = 0;
+		} else {
+			switch( next ) {
+				case "next":
+					if( curRow + size <= totalSize -1 ) {
 						curRow += size;
 					}
-				} else {
+					break;
+				case "previous":
 					if ( curRow - size < 0) {
 						curRow = 0;
 					} else {
 						curRow -= size;
 					}
-				}
+					break;
+				case "last":
+					curRow = totalPages( totalSize, size ) * size - size;
+					break;
+				case "first":
+					curRow = 0;
+					break;
 			}
-
-			pageSize = size;
 		}
+
+		return curRow;
 	}
 
-	var e = {
-		// Move the row pointer <<size>> rows forward
-		next: function( size ) {
+	var e = new function() {
+		this._curRow = undefined
+			, this._pageSize = 0
+			, this._totalSize = undefined;
+	};
 
-			updateCurRow.call( this.elem, true, size );
+	// Initialize the array
+	e.initArray = function ( size ) {
 
-			return this;
-		},
+		if ( isArray( this.elem ) ) {
 
-		// Move the row pointer <<size>> rows backward
-		previous: function( size ) {
+			this._pageSize = size ? size 
+						: this._pageSize;
 
-			updateCurRow.call( this.elem, false, size );
+			this._totalSize = this.elem.length;
 
-			return this;
-		},
-
-		// Returns the array with the data of specified size at the current row pointer
-		current: function( size ) {
-
-			if ( isArray( this.elem ) ) {
-
-				pageSize = size ? size 
-							: pageSize;
-
-				if ( !curRow )
-					curRow = 0;
-
-				return this.elem.slice( curRow, curRow + pageSize );
-			}
-		},	
-
-		// Returns the total numbers of rows in the array
-		totalRows: function	( ) {
-
-			if ( isArray( this.elem ) ) {
-				
-				return this.elem.length;
-			}
-			return undefined;
-		},
-
-		// Returns the currently set maximum number of rows per page
-		pageSize: function ( ) {
-			return pageSize;
-		},
-
-		// Returns the total numbers of rows in the array
-		totalPages:  function ( ) {
-			if ( isArray( this.elem ) ) {
-
-				return ( Math.floor( this.elem.length / pageSize ) + ( ( this.elem.length % pageSize ) > 0 ? 1 : 0 ) );
-			}
-			return undefined;
-		},
-
-		// Return the current page in the array
-		currentPage: function( ) {
-			// ( CR % PS ) + ( CR div PS )
-			return ( (curRow+1) % pageSize ) + Math.floor( (curRow+1) / pageSize );
-		},
-
-		// Return the number of rows on the current array page
-		rowsOnCurrent: function ( ) {
-			return this.elem.slice( curRow, curRow + pageSize ).length;
+			if ( !this._curRow )
+				this._curRow = 0;
 		}
+
+		return this;
+	};
+
+	// Move the row pointer <<size>> rows forward
+	e.next = function( size ) {
+
+		this._curRow = updateCurRow( this._curRow, "next", size, this._totalSize );
+
+		return this;
+	};
+
+	// Move the row pointer <<size>> rows backward
+	e.previous = function( size ) {
+
+		this._curRow = updateCurRow( this._curRow, "previous", size, this._totalSize );
+
+		return this;
+	};
+
+	e.first = function ( size ) { 
+
+		this._curRow = updateCurRow( this._curRow, "first", size, this._totalSize );
+
+		return this;
+	};
+
+	e.last = function ( size ) {
+
+		this._curRow = updateCurRow( this._curRow, "last", size, this._totalSize );
+
+		return this;
+	};
+
+	// Returns the array with the data of specified size at the current row pointer
+	e.current = function( size ) {
+
+		return this.elem.slice( this._curRow, this._curRow + this._pageSize );
+	};
+
+	// Returns the zero-based current position of the row pointer
+	e.currentRow = function( ) {
+
+		return this._curRow;
+	};	
+
+	// Returns the total numbers of rows in the array
+	e.totalRows = function	( ) {
+
+		return this._totalSize;
+	};
+
+	// Returns the currently set maximum number of rows per page
+	e.pageSize = function ( ) {
+
+		return this._pageSize;
+	};
+
+	// Returns the total numbers of rows in the array
+	e.totalPages =  function ( ) {
+
+		return  totalPages( this._totalSize, this._pageSize );
+	};
+
+	// Return the current page in the array
+	e.currentPage = function ( ) {
+
+		return currentPage( this._curRow, this._pageSize );
+	};
+
+	// Return the number of rows on the current array page
+	e.rowsOnCurrent = function ( ) {
+
+		return rowsOnCurrentPage( currentPage(this._curRow, this._pageSize), this._pageSize, this._totalSize );
 	};
 
 	o.extend(o.fn, e);
