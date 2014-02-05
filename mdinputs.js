@@ -34,6 +34,9 @@
 			getValue: function () { 
 				if(this.elem instanceof HTMLInputElement) {
 					switch(this.elem.type.toUpperCase()) {
+					case "PASSWORD":
+						return wrap(this.elem.value,options.delim);
+						break;
 					case "TEXT":
 						return wrap(this.elem.value,options.delim);
 						break;

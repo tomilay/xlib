@@ -576,7 +576,7 @@ if (typeof Object.create !== 'function') {
 	// EXTEND FUNCTION. THIS FUNCTION WILL OVERWRITE EXISTING PROTOTYPE MEMBERS
 	// ************************************************************************
 	x$.extend = function (o, x) {
-		if(o && x && typeof o === typeof x && typeof o === "object"){
+		if(o && x && typeof o === "object" && (typeof o === typeof x || typeof x === "function") ){
 			for(i in x) {
 				o[i] = x[i];
 			}

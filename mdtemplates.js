@@ -132,6 +132,27 @@
 	}
 	
 	var e = {
+			//************************************************************************ 
+			// RETRIEVE THE DATA FROM THE FORM CONTROLS AND RETURN AN OBJECT DATA CONTAINER
+			//************************************************************************ 					
+			getData: function ( ) {
+
+				var data = {}, lm = this.elem;
+				
+				this.each( function get( index, value ) {
+					
+					var elem = value;
+					
+					if( value && value.attributes["data-bind"] ) {
+
+						node = x$( value, lm );
+						data[ value.attributes["data-bind"].value ] = node.getValue( );
+					}
+				} );
+
+				return data;
+			},
+
 			applyBindings: function(data){
 				if(x$.isArray(data)){
 					return bindRows.call(this, data)
