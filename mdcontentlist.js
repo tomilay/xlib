@@ -24,7 +24,8 @@
 		var _size = options.size ? options.size : 0;
 		if ( _size < 0 ) _size = 0;
 		var _listing = x$( ">div.contentarea>ul>li", elem );
-		var _data = x$( data ).initArray( _size );
+		// var _data = x$( data ).initArray( _size );
+		var _data = new x$.iterator( data, _size );
 
 		var getListing = function ( ) {
 
@@ -48,18 +49,18 @@
 				// Update display with the current data
 				if ( navPages ) {
 
-					navPages.applyBindings({ currentPage:data.currentPage( ), totalPages:data.totalPages( ) });
+					navPages.applyBindings({ currentPage:data.getCurrentPage( ), totalPages:data.getTotalPages( ) });
 				}
 
-				this.getListing( ).applyBindings( data.current() );
+				this.getListing( ).applyBindings( data.getCurrentData() );
 		};
 
 		if ( options.navpages ) {
 
-			options.navpages.applyBindings( { currentPage:_data.currentPage( ), totalPages:_data.totalPages( ) } );
+			options.navpages.applyBindings( { currentPage:_data.getCurrentPage( ), totalPages:_data.getTotalPages( ) } );
 		}
 
-		_listing.applyBindings( _data.current() );
+		_listing.applyBindings( _data.getCurrentData() );
 
 		function movePointer ( evt ) {
 			var self = evt ? evt.currentTarget : this;
@@ -82,10 +83,10 @@
 			// Update display with the current data
 			if ( options.navpages ) {
 
-				options.navpages.applyBindings({ currentPage:_data.currentPage( ), totalPages:_data.totalPages( ) });
+				options.navpages.applyBindings({ currentPage:_data.getCurrentPage( ), totalPages:_data.getTotalPages( ) });
 			}
 
-			_listing.applyBindings( _data.current() );
+			_listing.applyBindings( _data.getCurrentData() );
 
 			stopBubble( evt );
 		}
