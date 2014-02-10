@@ -1,0 +1,267 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" lang="en" xml:lang="en">
+
+<head>
+	<title>Data Capture</title>
+	<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1" />
+	<meta http-equiv="Content-Language" content="en-us" />
+	<meta http-equiv="X-UA-Compatible" content="IE=8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<!-- <link href="css/contentlist.css" rel="stylesheet" type="text/css" /> -->
+	<link href="css/form.css" rel="stylesheet" type="text/css" />
+	<script src="xlib/mdcore.js"></script>
+	<script src="xlib/mdinput.js"></script>
+	<script src="xlib/mdinputs.js"></script>
+	<script src="xlib/mdtemplate.js"></script>
+	<script src="xlib/mditerator.js"></script>
+	<script src="xlib/mdcontentlist.js"></script>
+	<script src="xlib/mddatacapture.js"></script>
+<!--
+	<script src="xlib/mdajax.js"></script>
+-->
+</head>
+
+<body>
+
+<!-- START OF contentlist -->
+<div class="datacapture" id="datacapture">
+
+	<!-- START OF contentheader -->
+	<div class="contentheader"><p>This is unchanging header information</p></div>
+	<!-- END OF contentheader -->
+
+	<!-- START OF contentnavfirst -->
+	<div class="contentnavfirst">
+		first
+	</div>
+	<!-- END OF contentnavfirst -->
+
+	<!-- START OF contentnavprev -->
+	<div class="contentnavprev">
+		previous
+	</div>
+	<!-- END OF contentnavprev -->
+
+	<!-- START OF contentnavlast -->
+	<div class="contentnavlast">
+		last
+	</div>
+	<!-- END OF contentnavlast -->
+
+	<!-- START OF contentnavnext -->
+	<div class="contentnavnext">
+		next
+	</div>
+	<!-- END OF contentnavnext -->
+
+	<!-- START OF contentnavpages -->
+	<div class="contentnavpages">
+		<span>Page <span data-bind="currentPage"></span> out of <span data-bind="totalPages"></span></span>
+	</div>
+	<!-- END OF contentnavpages -->
+
+	<!-- START OF contentarea -->
+	<div class="contentarea clearbefore">
+
+		<ul>
+			<li id="listing" name="listing">
+				<div class="metadata">
+					<h3 class="details" data-bind="details">Some Information About The Data Capture</h3>
+					<div>A Basic Form</div>
+					<div>Please fill this form and submit</div>
+				</div>
+
+				<!--Start of formcontainer div-->
+
+				<div class="formcontainer">
+					<form method="post" action="page.html">
+
+						<!--SINGLE LINE TEXT FIELD-->
+
+						<div class="clearfix">
+
+							<label>Enter your First Name.  <em>(The common appelation)</em></label>
+
+							<input id="firstname" name="firstName" data-bind="firstname" type="text" sze="35"/>
+
+						</div>
+
+						<!--MULTI-LINE TEXT FIELD-->
+
+						<div class="clearfix">
+
+							<label>Description</label>
+
+							<textarea name="description" data-bind="description" rows="6" cols="26"></textarea>
+
+						</div>
+
+						<!--PASSWORD TEXT FIELD-->
+
+						<div class="clearfix">
+
+							<label>Password</label>
+
+							<input name="password" data-bind="password" type="password" sze="35"/>
+
+						</div>
+
+						<!--RADIO BUTTONS-->
+
+						<div class="clearfix">
+
+							<label>Pick One</label>
+
+							<div class="buttongroup clearfix"><!--box for buttons group-->
+
+								<div class="clearfix">
+
+									<input name="radioset" data-bind="radioset" type="radio" size="35" value="Choice_1" checked="checked"/>
+
+									<label>Choice 1</label>
+
+								</div>
+
+								<div class="clearfix">
+
+									<input name="radioset" data-bind="radioset" type="radio" size="35" value="Choice_2"/>
+
+									<label>Choice 2</label>
+									
+								</div>
+
+								<div class="clearfix">
+
+									<input name="radioset" data-bind="radioset" type="radio" size="35" value="Choice_3"/>
+
+									<label>Choice 3</label>
+									
+								</div>
+
+							</div>
+
+						</div>
+
+						<!--END OF RADIO BUTTONS-->
+
+						<!--CHECK BOXES-->
+
+						<div class="clearfix">
+
+							<label>Pick One</label>
+
+							<div class="buttongroup clearfix"><!--box for buttons group-->
+
+								<div class="clearfix">
+
+									<input name="boxset" data-bind="checkbox" type="checkbox" size="35" value="Choice_1"/>
+
+									<label>Choice 1</label>
+
+								</div>
+
+								<div class="clearfix">
+
+									<input name="boxset" data-bind="checkbox" type="checkbox" size="35" value="Choice_2"/>
+
+									<label>Choice 2</label>
+									
+								</div>
+
+								<div class="clearfix">
+
+									<input name="boxset" data-bind="checkbox" type="checkbox" size="35" value="Choice_3"/>
+
+									<label>Choice 3</label>
+									
+								</div>
+
+							</div>
+
+						</div>
+
+						<!--END OF CHECK BOXES-->
+						
+						<!--DROP DOWN MENU-->
+						
+						<div class="clearfix">
+
+							<label>Pick from menu and then click submit below</label>
+
+							<select name="guitar" data-bind="guitar">
+
+								<option value="no_selection_made">Pick your favorite guitar</option>
+
+								<option value="gibson">Gibson</option>
+
+								<option value="fender">Fender</option>
+
+								<option value="taylor">Taylor</option>
+
+							</select>
+
+						</div>
+
+						<div class="clearfix">
+
+							<label>Pick a car then click submit below</label>
+
+							<select data-bind="car" multiple="multiple">
+							 	
+							 	<option value="1">Volvo</option>
+							  
+							  	<option value="2">Saab</option>
+							  
+							  	<option value="3">Mercedes</option>
+							  
+							  	<option value="4">Audi</option>
+
+							</select>
+
+						</div>
+						<!--END OF DROP DOWN MENU-->
+
+						<!--SUBMIT BUTTON-->
+
+						<div class="clearfix">
+
+							<input type="submit" size="35"  onclick='return sub();' value= "Submit this Form"/>
+						</div>
+
+					</form>
+
+				</div>
+
+				<!--End of formcontainer div-->
+			</li>
+		</ul>
+
+	</div>
+	<!-- END OF contentarea -->
+
+	<!-- START OF contentfooter -->
+	<div class="contentfooter"><p>This is unchanging footer information</p></div>
+	<!-- END OF contentfooter -->
+
+</div>
+<!-- END OF contentlist -->
+
+<script>
+	var data = JSON.parse('{"checkbox":{"1":"Choice_1","2":"Choice_3"},"password":"Test Password.","radioset":{"0":"Choice_2"},"car":{"1":"2","2":"3"},"guitar":"fender","firstname":"Test Name","description":"There is nothing to describe.  This is a test."}');
+	var node = x$( ">div.contentarea>ul>li>div.formcontainer>form", x$("#datacapture").getNode()).getNode();
+	var tmplt = new x$.template( node );
+	tmplt.applyBindings( data );
+	
+	var dc = new x$.dataCapture( x$("#datacapture").getNode(), {size:1} );
+
+	function sub( ) {
+
+		dc.save( );
+
+	 	return false;
+	}
+</script>
+</body>
+
+</html>
