@@ -115,6 +115,18 @@
 
 				_curRow = page * size - size;
 			}
+
+			return this;
+		};
+
+		// Move the row pointer to the given row - 1 based ordering is assumed
+		var gotoRow = function ( row ) {
+
+			if( row > 0 && row <= arr.length ) {
+
+				_curRow = row - 1;
+			}
+
 			return this;
 		};
 
@@ -173,6 +185,7 @@
 			getCurrentRow: getCurrentRow,
 			first: first,
 			gotoPage: gotoPage,
+			gotoRow: gotoRow,
 			last: last,
 			next: next,
 			getPageSize: getPageSize,

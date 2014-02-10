@@ -24,8 +24,10 @@
 		var _size = options.size ? options.size : 0;
 		if ( _size < 0 ) _size = 0;
 		var _listing = x$( ">div.contentarea>ul>li", elem );
-		// var _data = x$( data ).initArray( _size );
 		var _data = new x$.iterator( data, _size );
+		var _navPages = options.navpages;
+		var _tmpNav = _navPages ? new x$.template( _navPages.getNode() ) : undefined,
+			_tmpList = new x$.template( _listing.getNode() );
 
 		var getListing = function ( ) {
 
@@ -41,28 +43,26 @@
 		};
 		var setPage = function ( page ) {
 
-				var data = this.getData( ), 
-					navPages = this.getNavPages( );
+			_data.gotoPage( page );
+		};
+		var setRow = function ( row ) {
 
-				data.gotoPage( page );
+			_data.gotoRow( row );
+		};
+		var updateDisplay = function ( ) {
 
-				// Update display with the current data
-				if ( navPages ) {
+			if ( _navPages ) {
 
-					navPages.applyBindings({ currentPage:data.getCurrentPage( ), totalPages:data.getTotalPages( ) });
-				}
+				_tmpNav.applyBindings( { currentPage:_data.getCurrentPage( ), totalPages:_data.getTotalPages( ) } );
+			}
 
-				this.getListing( ).applyBindings( data.getCurrentData() );
+			_tmpList.applyBindings( _data.getCurrentData() );
 		};
 
-		if ( options.navpages ) {
-
-			options.navpages.applyBindings( { currentPage:_data.getCurrentPage( ), totalPages:_data.getTotalPages( ) } );
-		}
-
-		_listing.applyBindings( _data.getCurrentData() );
+		updateDisplay( );
 
 		function movePointer ( evt ) {
+
 			var self = evt ? evt.currentTarget : this;
 
 			switch( self.className ) {
@@ -80,13 +80,7 @@
 					break;
 			}
 
-			// Update display with the current data
-			if ( options.navpages ) {
-
-				options.navpages.applyBindings({ currentPage:_data.getCurrentPage( ), totalPages:_data.getTotalPages( ) });
-			}
-
-			_listing.applyBindings( _data.getCurrentData() );
+			updateDisplay( );
 
 			stopBubble( evt );
 		}
@@ -97,12 +91,14 @@
 		_cl.getNode().onclick = movePointer;
 
 		return {
-			getListing:getListing,
-			getNavPages:getNavPages,
-			getData:getData,
-			setPage:setPage
+			getListing: getListing,
+			getNavPages: getNavPages,
+			getData: getData,
+			setPage: setPage,
+			setRow: setRow,
+			updateDisplay: updateDisplay
 		}
 	};
 
 	o.contentList = o.contentList || e;
-}(x$));
+}(x$) );

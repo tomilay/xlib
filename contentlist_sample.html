@@ -9,8 +9,9 @@
 	<link href="contentlist.css" rel="stylesheet" type="text/css" />
 	<script src="mdcore.js"></script>
 	<script src="mdarray.js"></script>
-	<script src="mdinputs.js"></script>
-	<script src="mdtemplates.js"></script>
+	<script src="mditerator.js"></script>
+	<script src="mdinput.js"></script>
+	<script src="mdtemplate.js"></script>
 	<script src="mdcontentlist.js"></script>
 </head>
 
@@ -193,12 +194,17 @@
 <script>
 function update(){
 		var arr = [{"city":"Nairobi","status":"Available","description":"Guest house next to Nairobi National Park and Animal Orphanage","address":"Kijabe Street, Nairobi","photo":"http://images.travelpod.com/users/pjms/1.1277556274.nairobi-hotel.jpg","price":"$50\/night"},{"city":"Kampala","status":"Fluid","description":"Private suites behind a golf course in an upscale part of Kampala","address":"Jinja Road, Kampala","photo":"http://media-cdn.tripadvisor.com/media/photo-s/03/96/66/c0/golf-course-hotel.jpg","price":"$50\/night"},{"city":"Dar-es-salaam","status":"Available","description":"3 bedroom beach house","address":"Nyerere Road, Dar-es-salaam","photo":"http://www.hostelsclub.com/pics/10587/010587-1227607444.jpg","price":"$30\/night"},{"city":"Mombasa","status":"Available","description":"beach house with fantastic sunsets","address":"Diani Beach, Mombasa","photo":"http://shivkapila.com/wp-content/uploads/2012/02/DSC_03322-600x366.jpg","price":"$60\/night"},{"city":"Voi","status":"Available","description":"A diner Malindi. On the Malindi Mombasa Highway.","address":"Malindi Mombasa Highway, Malindi","photo":"http://media-cdn.tripadvisor.com/media/photo-s/01/c2/7c/6d/breakfast.jpg","price":"N\/A"}],
-		hotels = x$( "#hotels" ),
-		houses = x$( "#houses" );
-	var options = { size: 1, navpages: x$(".contentnavpages", houses.getNode()) }; // 1 row per page and the element on which to put page info
+		houses = x$( "#houses" ),
+		hotels = x$( "#hotels" );
+		
+	var options = { size: 1, navpages: x$(".contentnavpages>span", houses.getNode()) }; // 1 row per page and the element on which to put page info
 	var o = new x$.contentList( houses.getNode(), arr, options );
-	options =  { size: 2, navpages: x$(".contentnavpages", hotels.getNode()) };
+	options =  { size: 2, navpages: x$(".contentnavpages>span", hotels.getNode()) };
 	var o1 = new x$.contentList( hotels.getNode(), arr, options );
+
+	o.setPage( 2 );
+	o.updateDisplay();
+ // 	o1.setPage( 3 );
 }
 
 update();
