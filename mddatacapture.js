@@ -5,13 +5,6 @@
 // 
 // Dependency: mdcore.js, mdarray.js, mdtemplates.js
 //************************************************************************ 		
-//************************************************************************ 
-//	EXTEND x$ TO SUPPORT VERTICAL SCROLL BAR MANIPULATION
-//	
-// 	Supported browsers: IE8, Chrome, FireFox, Safari, Opera
-// 
-// Dependency: mdcore.js, mdarray.js, mdtemplates.js
-//************************************************************************ 		
 (function(o) {
 
 	var e = function( elem, options ) {
