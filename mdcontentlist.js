@@ -29,25 +29,9 @@
 		var _tmpNav = _navPages ? new x$.template( _navPages.getNode() ) : undefined,
 			_tmpList = new x$.template( _listing.getNode() );
 
-		var getListing = function ( ) {
-
-			return _listing;
-		};
-		var getNavPages = function( ) {
-
-			return options.navpages;
-		};
-		var getData = function ( ) {
+		var getIterator = function ( ) {
 
 			return _data;
-		};
-		var setPage = function ( page ) {
-
-			_data.gotoPage( page );
-		};
-		var setRow = function ( row ) {
-
-			_data.gotoRow( row );
 		};
 		var updateDisplay = function ( ) {
 
@@ -63,7 +47,7 @@
 
 		function movePointer ( evt ) {
 
-			var self = evt ? evt.currentTarget : this;
+			var self = evt ? evt.currentTarget? evt.currentTarget : this : this;
 
 			switch( self.className ) {
 				case "contentnavprev":
@@ -85,17 +69,13 @@
 			stopBubble( evt );
 		}
 
-		_cp.getNode().onclick = movePointer;
-		_cn.getNode().onclick = movePointer;
-		_cf.getNode().onclick = movePointer;
-		_cl.getNode().onclick = movePointer;
+		x$.bind( _cp.getNode() , "click", movePointer );
+		x$.bind( _cn.getNode() , "click", movePointer );
+		x$.bind( _cf.getNode() , "click", movePointer );
+		x$.bind( _cl.getNode() , "click", movePointer );
 
 		return {
-			getListing: getListing,
-			getNavPages: getNavPages,
-			getData: getData,
-			setPage: setPage,
-			setRow: setRow,
+			getIterator: getIterator,
 			updateDisplay: updateDisplay
 		}
 	};

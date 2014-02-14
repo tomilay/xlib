@@ -81,6 +81,8 @@
 
 			_curRow = updateCurRow( _curRow, "next", size, arr.length );
 
+			x$.triggerHandler( this, "next", true, {curRow: _curRow, data: this } );
+
 			return this;
 		};
 
@@ -88,6 +90,8 @@
 		var previous = function( size ) {
 
 			_curRow = updateCurRow( _curRow, "previous", size, arr.length );
+
+			x$.triggerHandler( this, "previous", true, {curRow: _curRow, data: this } );
 
 			return this;
 		};
@@ -97,6 +101,8 @@
 
 			_curRow = updateCurRow( _curRow, "first", size, arr.length );
 
+			x$.triggerHandler( this, "first", true, {curRow: _curRow, data: this } );
+
 			return this;
 		};
 
@@ -104,6 +110,8 @@
 		var last = function ( size ) {
 
 			_curRow = updateCurRow( _curRow, "last", size, arr.length );
+
+			x$.triggerHandler( this, "last", true, {curRow: _curRow, data: this } );
 
 			return this;
 		};

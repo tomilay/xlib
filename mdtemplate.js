@@ -5,7 +5,7 @@
 // 
 //         Dependency: mdcore.js, mdinputs.js
 //        
-//        This module permits a qweb designer to create templates
+//        This module permits a web designer to create templates
 //        that will bind to data-sets or models
 //************************************************************************  
 (function(o) {
@@ -22,9 +22,10 @@
 		else if ( x.name > y.name )
 			return 1;
 		else
-			return 0
+			// return -1 instead of 0.  Otherwise google chrome behaves funny.
+			return -1
 	}
-	
+
 	var e = function ( elem ) {
 		
 		var lm = x$( "[data-bind]", elem ).getNode( ),
@@ -106,7 +107,7 @@
 					}
 
 					// Set values only for data fields with an actual value.  Prevents inadvertent overwriting.
-					if ( data[inpt.getDataBind()] ) {
+					if ( data[inpt.getDataBind()]  || data[inpt.getDataBind()] === "" ) {
 
 						inpt.setValue( data[inpt.getDataBind()] );
 					}
@@ -116,28 +117,28 @@
 						return { "inc":group.length-1 };
 				} );
 			}
-			return this;
 		}
 
 		var applyBindings = function ( data ) {
 			
-			// Remove any old copies of binds from document
-			emptyOlds( );
+			if( ! x$.isEmpty(data) ) {
+				
+				// Remove any old copies of binds from document
+				emptyOlds( );
 
-			if( x$.isArray(data) ){
+				if( x$.isArray(data) ){
 
-				bindRows( data )
+					bindRows( data )
 
-			}else{
+				}else{
 
-				// Remove the template node from the document if present
-				if ( elem ) 
-					x$( elem ).remove( );
+					// Remove the template node from the document if present
+					if ( elem ) 
+						x$( elem ).remove( );
 
-			 	bindSingle( data );
+				 	bindSingle( data );
+				}
 			}
-			
-			return copy;
 		};
 
 		//************************************************************************ 
@@ -186,7 +187,7 @@
 
 		return {
 			applyBindings: applyBindings,
-			getData: getData
+			getData: getData,
 		}
 	};
 

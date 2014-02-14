@@ -202,9 +202,8 @@ function update(){
 	options =  { size: 2, navpages: x$(".contentnavpages>span", hotels.getNode()) };
 	var o1 = new x$.contentList( hotels.getNode(), arr, options );
 
-	o.setPage( 2 );
+	o.getIterator( ).gotoPage( 2 );
 	o.updateDisplay();
- // 	o1.setPage( 3 );
 }
 
 update();

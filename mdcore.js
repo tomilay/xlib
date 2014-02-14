@@ -58,52 +58,6 @@ if (typeof Object.create !== 'function') {
 			NOTATION_NODE: 12
 			};
 	
-	// borrowed heavily from Dean Edward's addEvent function.  A beauty.
-
-	function addEvent( element, type, handler ) {
-	  // assign each event handler a unique ID
-	  if ( !handler.$$guid ) handler.$$guid = ++x$.uuid;
-	  // create a hash table of event types for the element
-	  if ( !element.events ) element.events = {};
-	  // create a hash table of event handlers for each element/event pair
-	  var handlers = element.events[ type ];
-	  if ( !handlers ) {
-	    handlers = element.events[ type ] = {};
-	  }
-	  // store the event handler in the hash table
-	  handlers[ handler.$$guid ] = handler;
-	};
-
-	function removeHandler( element, type, handler ) {
-	  // delete the event handler from the hash table
-	  if ( element.events && element.events[ type ] ) {
-	    delete element.events[ type ][ handler.$$guid ];
-	  }
-	};
-
-	function removeType( element, type ) {
-	  // delete the event handler from the hash table
-	  if ( element.events && element.events[ type ] ) {
-	    delete element.events[ type ];
-	  }
-	};
-
-	function triggerEvent( type, args ) {
-	  var returnValue = true;
-	  // get a reference to the hash table of event handlers
-	  var handlers = this.events[ type ];
-	  // assemble the arguments
-	  var args = [type, args];
-	  // execute each event handler
-	  for ( var i in handlers ) {
-	    this.$$handleEvent = handlers[ i ];
-	    if ( this.$$handleEvent.call( this, args ) === false ) {
-	      return returnValue = false;
-	    }
-	  }
-	  return returnValue;
-	};
-
 	// ************************************************************************
 	// BASE WRAPPER CLASS CONSTRUCTOR FOR DOM ELEMENTS
 	// ************************************************************************
@@ -342,13 +296,7 @@ if (typeof Object.create !== 'function') {
 			// ************************************************************************
 			bind: function( type, handler ) {
 				if( this.elem ) {
-					if ( x$.isArray(this.elem) ) {
-						this.each(function(iter, value){
-							x$.bind( value, type, handler );
-						}, false);
-					} else {
-						x$.bind( this.elem, type, handler );
-					}
+					x$.bind( this.elem, type, handler );
 				}
 			},
 
@@ -363,15 +311,7 @@ if (typeof Object.create !== 'function') {
 			// REMOVE AN EVENT HANDLER
 			// ************************************************************************
 			unbindHandler: function( type, handler ) {
-				if( this.elem ) {
-					if ( x$.isArray(this.elem) ) {
-						this.each(function(iter, value){
-							x$.unbindHandler( value, type, handler );
-						}, false);
-					} else {
-						x$.unbindHandler( this.elem, type, handler );
-					}
-				}
+				x$.unbindHandler( this.elem, type, handler );
 			},
 
 			// ************************************************************************
@@ -435,6 +375,7 @@ if (typeof Object.create !== 'function') {
 	// CREATE A NODE OF TYPE tagName
 	// ************************************************************************
 	x$.createElement = function(tagName, doc) {
+
 		var lm = (doc.nodeName && doc.nodeName === "#document")?doc.createElement(tagName):document.createElement(tagName);
 
 		return lm;
@@ -444,6 +385,7 @@ if (typeof Object.create !== 'function') {
 	// BIND AN EVENT OF TYPE type TO A HANDLER handler
 	// ************************************************************************
 	x$.bind = function( elem, type, handler ) {
+
 		addEvent( elem, type, handler );
 	};
 	
@@ -451,9 +393,12 @@ if (typeof Object.create !== 'function') {
 	// TRIGGER AN EVENT HANDLER OF TYPE type
 	// ************************************************************************
 	x$.triggerHandler = function( elem, type, async, args ) {
+
 		if ( async ) {
+
 			setTimeout( function() { triggerEvent.call( elem, type, args ); }, 0 )
 		} else {
+
 			triggerEvent.call( elem, type, args );
 		}
 	};
@@ -462,14 +407,8 @@ if (typeof Object.create !== 'function') {
 	// UNBIND AN EVENT HANDLER handler
 	// ************************************************************************
 	x$.unbindHandler = function( elem, type, handler ) {
-		removeHandler( elem, type, handler );
-	};
 
-	// ************************************************************************
-	// BIND AN EVENT OF TYPE type
-	// ************************************************************************
-	x$.unbindType = function( elem, type ) {
-		removeType( elem, type );
+		removeHandler( elem, type, handler );
 	};
 
 	// ************************************************************************
@@ -495,6 +434,7 @@ if (typeof Object.create !== 'function') {
 	// FIND AND RETURN DOM ELEMENT FROM THE GIVEN PARAMETER
 	// ************************************************************************
 	x$.resolveNode = function ( expr, context, isXML ) {
+
 		if( expr && typeof expr !== "string" ) {
 			return expr;
 		}
@@ -506,8 +446,6 @@ if (typeof Object.create !== 'function') {
 		} else {
 			return result;
 		}
-		// return result;//(o && typeof o == "string" &&
-		// document.getElementById(o) || o) || null;
 	};
 	
 	// ************************************************************************
@@ -570,6 +508,30 @@ if (typeof Object.create !== 'function') {
 	// ************************************************************************
 	x$.isObject = function ( o ) {
 		return o.length === undefined || typeof o === 'function';
+	};
+
+	// ************************************************************************
+	// TEST FOR EMPTYOBJECT
+	// ************************************************************************
+	x$.isEmpty = function ( obj ) {
+
+	    // null and undefined are "empty"
+	    if ( obj == null ) return true;
+
+	    // Assume if it has a length property with a non-zero value
+	    // that that property is correct.
+	    if ( obj.length > 0 )    return false;
+	    if ( obj.length === 0 )  return true;
+
+	    // Otherwise, does it have any properties of its own?
+	    // Note that this doesn't handle
+	    // toString and valueOf enumeration bugs in IE < 9
+	    for ( var key in obj ) {
+
+	        if ( Object.prototype.hasOwnProperty.call(obj, key) ) return false;
+	    }
+
+	    return true;
 	};
 
 	// ************************************************************************
@@ -674,6 +636,131 @@ if (typeof Object.create !== 'function') {
 		}, false );
 
 		return result;
+	};
+
+	// ************************************************************************
+	// A Ready function for DOMContentLoaded
+	// ************************************************************************
+	x$.ready = function( func ) {
+
+	};
+
+	var isEventSupported = ( function ( ) {
+
+	    var TAGNAMES = {
+	    	'select':'input','change':'input',
+	      	'submit':'form','reset':'form',
+	      	'error':'img','load':'img','abort':'img'
+	    }
+
+	    function isEventSupported( eventName ) {
+
+	      	var elem = document.createElement(TAGNAMES[eventName] || 'div');
+	      	eventName = 'on' + eventName;
+	      	var isSupported = ( eventName in elem );
+	      
+	      	if ( ! isSupported ) {
+
+	        elem.setAttribute( eventName, 'return;' );
+
+	        isSupported = typeof elem[eventName] == 'function';
+	      }
+
+	      elem = null;
+
+	      return isSupported;
+	    }
+
+	    return isEventSupported;
+	  } )( );
+
+	// borrowed heavily from Dean Edward's addEvent function.  A beauty.
+	function addEvent( element, type, handler ) {
+
+		if( isEventSupported (type) ) {
+	
+		  	if ( document.addEventListener ) {
+
+		  		// Add event listener - event bubbling is the default behavior
+		  		element.addEventListener( type, handler, false );
+		  	}
+
+		  	if ( document.attachEvent ) {
+
+		  		type = "on" + type
+
+		      	// Because the attachEvent uses the window object to add the event and we don't want to polute it.
+		      	var boundedHandler = function() {
+
+		        	return handler.apply( element, arguments );
+		      	};
+		      
+		      	element.attachEvent( type, boundedHandler );
+		  	}
+		}
+
+		handler.$$guid = handler.$$guid || ++x$.uuid;
+		element.events = element.events || {};
+		handlers = element.events[ type ] || ( element.events[ type ] = {} );
+
+	  	// store the event handler in the hash table
+	  	handlers[ handler.$$guid ] = handler;
+	};
+
+	function removeHandler( element, type, handler ) {
+	  
+		if( isEventSupported (type) ) {
+	
+		  	if ( document.addEventListener ) {
+
+			  	if ( element.events && element.events[ type ] ) {
+
+			   		element.removeEventListener( type, element.events[ type ][ handler.$$guid ], false );
+	   				
+	   				delete element.events[ type ][ handler.$$guid ];
+			  	}
+		  	}
+
+		  	if ( document.attachEvent ) {
+
+		      	type = "on" + type;
+		      	
+			  	if ( element.events && element.events[ type ] ) {
+
+			      	element.detachEvent( type, element.events[ type ][ handler.$$guid ] );
+			    }
+		  	}
+		} 
+		 
+	  	// delete the event handler from the hash table - for custom event types
+	  	if ( element.events && element.events[ type ] ) {
+
+	   		delete element.events[ type ][ handler.$$guid ];
+	  	}
+	};
+
+	function triggerEvent( type, args ) {
+
+	  	var returnValue = true;
+	  
+	  	// get a reference to the hash table of event handlers
+		var handlers = this.events[ type ];
+	  
+	  	// assemble the arguments
+	  	var args = [type, args];
+	  
+	  	// execute each event handler
+	  	for ( var i in handlers ) {
+	  
+	    	this.$$handleEvent = handlers[ i ];
+	  
+	    	if ( this.$$handleEvent.call( this, args ) === false ) {
+	  
+	      		return returnValue = false;
+	    	}
+	  	}
+
+	  	return returnValue;
 	};
 
 	// ************************************************************************
