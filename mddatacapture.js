@@ -7,12 +7,84 @@
 //************************************************************************ 	
 (function(o) {
 
-	var e = function( elem, options ) {
+	function preventDefault ( e ) {
+
+		if ( e.preventDefault ) e.preventDefault( );
+
+		e.returnValue = false;
+	}	
+
+	var e = function( sel, options ) {
+
 		var 
 			_contentList, 
-			_array = [ ];
+			_array = [ ],
+			elem;
 
-		var add = function ( ) {
+		x$.ready( function ( ) {
+
+			elem = x$( sel ).getNode( );
+
+			options.size = options.size ? options.size : 1;
+
+			x$.bind( x$(">div.contentarea>ul", elem).getNode(), "click", userClick );
+
+			// Reuse contentlist functionality
+			_contentList = new x$.contentList( elem, _array, options );
+
+			x$.bind( _contentList.getIterator() , "next", updateControls );
+			x$.bind( _contentList.getIterator() , "previous", updateControls );
+			x$.bind( _contentList.getIterator() , "first", updateControls );
+			x$.bind( _contentList.getIterator() , "last", updateControls );
+		} );
+		
+		function userClick( evt ) {
+
+			id = evt.target ? evt.target.id : undefined;
+
+			id = id || ( evt.srcElement ? evt.srcElement.id : undefined );
+
+			switch( id ) {
+
+				case "btn_new":
+
+					newRecord( );
+
+					preventDefault( evt );
+
+					break;
+				case "btn_add":
+
+					add( );
+
+					preventDefault( evt );
+
+					break;
+				case "btn_submit":
+
+					alert( submit() ); //submit( );
+
+					preventDefault( evt );
+
+					break;
+				case "btn_update":
+
+					update( );
+
+					preventDefault( evt );
+
+					break;
+				case "btn_remove":
+
+					remove( );
+
+					preventDefault( evt );
+
+					break;
+			}
+		}
+
+		function add ( ) {
 
 			var form = x$(">div.contentarea>ul>li>div.formcontainer>form", elem).getNode();
 			var tmplt = new x$.template( form );
@@ -26,7 +98,7 @@
 			_contentList.getIterator( ).gotoRow( _array.length )
 		};
 
-		var newRecord = function ( ) {
+		function newRecord (  ) {
 
 			var form = x$(">div.contentarea>ul>li>div.formcontainer>form", elem).getNode();
 
@@ -34,9 +106,11 @@
 
 			unsetState( "edit" );
 			setState( "new" );
+
+			return false;
 		};
 
-		var update = function ( ) {
+		function update ( ) {
 			
 			var curRow = _contentList.getIterator( ).getCurrentRow( );
 			var form = x$(">div.contentarea>ul>li>div.formcontainer>form", elem).getNode();
@@ -48,7 +122,7 @@
 			return true;
 		};
 
-		var remove = function ( ) {
+		function remove ( ) {
 			
 			var curRow = _contentList.getIterator( ).getCurrentRow( );
 			var form = x$(">div.contentarea>ul>li>div.formcontainer>form", elem).getNode();
@@ -63,10 +137,10 @@
 					_contentList.getIterator( ).previous( );
 					_contentList.updateDisplay( );
 				} else {
-					var add = x$("#add"),
-						submit = x$("#submit"),
-						update = x$("#update"),
-						remove = x$("#remove");
+					var add = x$( "#add", elem ),
+						submit = x$( "#submit", elem ),
+						update = x$( "#update", elem ),
+						remove = x$( "#remove", elem );
 
 					form.reset( );
 					unsetState( "edit" );
@@ -76,42 +150,33 @@
 			return true;
 		};
 
-		var submit = function ( ) {
+		function submit ( ) {
 			
 			return JSON.stringify( _array );
 		};
 		
-		options.size = options.size ? options.size : 1;
-
-		// Reuse contentlist functionality
-		_contentList = new x$.contentList( elem, _array, options );
-
 		function unsetState( state ) {
 
-			var add = x$("#add"),
-				newRecord = x$("#new_record"),
-				// submit = x$("#submit"),
-				update = x$("#update"),
-				remove = x$("#remove");
+			var add = x$( "#add", elem ),
+				newRecord = x$( "#new_record", elem ),
+				update = x$( "#update", elem ),
+				remove = x$( "#remove", elem );
 
 			add.removeClass( state );
 			newRecord.removeClass( state );
-			// submit.removeClass( state );
 			update.removeClass( state );
 			remove.removeClass( state );
 		}
 
 		function setState( state ) {
 
-			var add = x$("#add"),
-				newRecord = x$("#new_record"),
-				// submit = x$("#submit"),
-				update = x$("#update"),
-				remove = x$("#remove");
+			var add = x$( "#add", elem ),
+				newRecord = x$( "#new_record", elem ),
+				update = x$( "#update", elem ),
+				remove = x$( "#remove", elem );
 
 			add.addClass( state );
 			newRecord.addClass( state );
-			// submit.addClass( state );
 			update.addClass( state );
 			remove.addClass( state );
 		}
@@ -132,11 +197,6 @@
 			}
 		}
 
-		x$.bind( _contentList.getIterator() , "next", updateControls );
-		x$.bind( _contentList.getIterator() , "previous", updateControls );
-		x$.bind( _contentList.getIterator() , "first", updateControls );
-		x$.bind( _contentList.getIterator() , "last", updateControls );
-
 		return {
 			add: add,
 			newRecord: newRecord,
@@ -148,43 +208,3 @@
 
 	o.dataCapture = o.dataCapture || e;
 }(x$));
-
-// 	function add( ) {
-
-// 		dc.add( );
-
-// 	 	return false;
-// 	}
-
-// 	function update( ) {
-
-// 		dc.update( );
-
-// 	 	return false;
-// 	}
-
-// 	function rem( ) {
-
-// 		dc.remove( );
-
-// 		return false;
-// 	}
-
-// 	function sub( ) {
-
-// 		alert( dc.submit( ) );
-
-// 		return false;
-// 	}
-
-// 	function newRecord( ) {
-
-// 		dc.newRecord( );
-
-// 		return false;
-// 	}
-
-// window.onload = function ( ) {
-
-// 	var dc = new x$.dataCapture( x$("#datacapture").getNode(), {size:1} );
-// }

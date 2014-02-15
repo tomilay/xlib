@@ -638,11 +638,58 @@ if (typeof Object.create !== 'function') {
 		return result;
 	};
 
-	// ************************************************************************
-	// A Ready function for DOMContentLoaded
-	// ************************************************************************
-	x$.ready = function( func ) {
+	// **********************************************************************************************
+	// A Ready function for DOMContentLoaded 
+	// **********************************************************************************************
+	x$.ready = function( fn ) {
+		/*!
+		* Lifted from Diego Perini's contentloaded.js
+		*
+		*/
 
+		// @win window reference
+		// @fn function reference
+		function contentLoaded( win, fn ) {
+
+			var done = false, top = true,
+
+			doc = win.document, root = doc.documentElement,
+
+			add = doc.addEventListener ? 'addEventListener' : 'attachEvent',
+			rem = doc.addEventListener ? 'removeEventListener' : 'detachEvent',
+			pre = doc.addEventListener ? '' : 'on',
+
+			init = function ( e ) {
+
+				if (e.type == 'readystatechange' && doc.readyState != 'complete') return;
+				
+				(e.type == 'load' ? win : doc)[rem](pre + e.type, init, false);
+				
+				if (!done && (done = true)) fn.call(win, e.type || e);
+			},
+
+			poll = function( ) {
+
+				try { root.doScroll('left'); } catch(e) { setTimeout(poll, 50); return; }
+					init('poll');
+			};
+
+			if (doc.readyState == 'complete') fn.call(win, 'lazy');
+			else {
+			
+				if (doc.createEventObject && root.doScroll) {
+					
+					try { top = !win.frameElement; } catch(e) { }
+					if (top) poll();
+				}
+		
+				doc[add](pre + 'DOMContentLoaded', init, false);
+				doc[add](pre + 'readystatechange', init, false);
+				win[add](pre + 'load', init, false);
+			}
+		}
+
+		contentLoaded( window, fn );
 	};
 
 	var isEventSupported = ( function ( ) {

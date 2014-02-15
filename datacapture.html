@@ -8,11 +8,10 @@
 	<meta http-equiv="Content-Language" content="en-us" />
 	<meta http-equiv="X-UA-Compatible" content="IE=8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<!-- <link href="css/contentlist.css" rel="stylesheet" type="text/css" /> -->
-	<link href="css/form.css" rel="stylesheet" type="text/css" />
+	<link href="css/datacaptureform.css" rel="stylesheet" type="text/css" />
 	<script src="xlib/mdcore.js"></script>
+	<script src="xlib/mdcss.js"></script>
 	<script src="xlib/mdinput.js"></script>
-	<script src="xlib/mdinputs.js"></script>
 	<script src="xlib/mdtemplate.js"></script>
 	<script src="xlib/mditerator.js"></script>
 	<script src="xlib/mdcontentlist.js"></script>
@@ -20,6 +19,10 @@
 <!--
 	<script src="xlib/mdajax.js"></script>
 -->
+<script>
+
+	var dc = new x$.dataCapture( "#datacapture", {size:1} );
+</script>
 </head>
 
 <body>
@@ -75,7 +78,7 @@
 				<!--Start of formcontainer div-->
 
 				<div class="formcontainer">
-					<form method="post" action="page.html">
+					<form method="post">
 
 						<!--SINGLE LINE TEXT FIELD-->
 
@@ -226,7 +229,36 @@
 
 						<div class="clearfix">
 
-							<input type="submit" size="35"  onclick='return sub();' value= "Submit this Form"/>
+							<div class="new" id="new_record">
+
+								<button id="btn_new">New</button>
+
+							</div>
+
+							<div class="new" id="add">
+
+								<button id="btn_add">Add</button>
+
+							</div>
+
+							<div class="new" id="submit">
+
+								<button id="btn_submit">Submit</button>
+
+							</div>
+
+							<div class="new" id="update">
+
+								<button id="btn_update">Update</button>
+
+							</div>
+
+							<div class="new" id="remove">
+
+								<button id="btn_remove">Remove</button>
+
+							</div>
+
 						</div>
 
 					</form>
@@ -247,21 +279,6 @@
 </div>
 <!-- END OF contentlist -->
 
-<script>
-	var data = JSON.parse('{"checkbox":{"1":"Choice_1","2":"Choice_3"},"password":"Test Password.","radioset":{"0":"Choice_2"},"car":{"1":"2","2":"3"},"guitar":"fender","firstname":"Test Name","description":"There is nothing to describe.  This is a test."}');
-	var node = x$( ">div.contentarea>ul>li>div.formcontainer>form", x$("#datacapture").getNode()).getNode();
-	var tmplt = new x$.template( node );
-	tmplt.applyBindings( data );
-	
-	var dc = new x$.dataCapture( x$("#datacapture").getNode(), {size:1} );
-
-	function sub( ) {
-
-		dc.save( );
-
-	 	return false;
-	}
-</script>
 </body>
 
 </html>
