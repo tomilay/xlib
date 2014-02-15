@@ -1,0 +1,212 @@
+	* {
+		margin:0;
+		padding:0;
+	}
+
+	body {
+		font:1em verdana, arial, sans-serif; 
+		color:#003366;
+	}
+
+	button {
+		width:70px;
+	}
+	
+	div button {
+		float:left;
+	}
+
+	div#submit {
+		margin:0 .5em 0 .5em;
+		float:right;
+		font-size: 1em;
+	}
+
+	div#add.new {
+		margin:0 .5em 0 .5em;
+		float:left;
+		font-size: 1em;
+	}
+
+	div#add.edit, div#submit.edit {
+		display: none;
+	}
+
+	div#update.new, div#remove.new, div#new_record.new {
+		display: none;
+	}
+
+	div#update.edit, div#remove.edit, div#new_record.edit {
+		margin:0 .5em 0 .5em;
+		float:left;
+		font-size: 1em;
+	}
+
+	div.formcontainer {
+		width:390px;
+		margin-left:40px;
+		margin-top:20px;
+	}
+
+	div.formcontainer form {
+		border-top:2px solid #ccc;
+		border-bottom:3px solid #ccc;
+	}
+
+	div.formcontainer div.buttongroup {
+		float:left;
+		border:0px;
+		padding:0px;
+	}
+
+	div.formcontainer div.buttongroup div {
+		margin-bottom:5px;
+		font-size:.75em;
+	}
+
+	div.formcontainer div.buttongroup input {
+		margin-right:5px;
+	}
+
+	div.formcontainer div.clearfix {
+		border-top:1px solid #ccc;
+		padding:10px 0px;
+		position:relative;
+	}
+
+	div.formcontainer div.clearfix div.buttongroup {
+		border-top:0px solid #ccc;
+		padding:0px 0px;
+		position:relative;
+	}
+
+	div.formcontainer div.clearfix div.buttongroup label {
+		display:block;
+	}
+
+	div.formcontainer div.clearfix div.buttongroup div.clearfix {
+		border-top:0px solid #ccc;
+		padding:0px 0px;
+	}
+
+	div.formcontainer form label {
+		width:120px; 
+		float:left;
+		font-size:.75em;
+		margin:0 10px;
+	}
+
+	div.formcontainer form textarea {
+		text-align:left;
+	}
+
+	input[type="radio"], input[type="checkbox"] {
+		float:left;
+	}
+
+	input[type="submit"], input[type="button"] {
+		float:right;
+	}
+
+	select {
+		border:1px solid #ccc;
+	}
+
+	.clearfix:after {
+		content:".";
+		display:block;
+		height:0;
+		clear:both;
+		visibility:hidden;
+	}
+
+/* CONTENT LIST PORTION */
+	div.datacapture {
+		position:relative;
+		width:450px;
+		margin-top:20px;
+		font-size:1em;
+		border:1px dotted black;
+	}
+
+	/* Anchor inside a div with class = datacapture */
+	div.datacapture a {
+		padding:0 6px;
+		text-decoration:none;
+		color:#5f605f;
+	}
+
+	div.datacapture a:hover {
+		color:#f33;
+	}
+
+	div.datacapture div.contentnavfirst {
+		float:left;
+	}
+
+	div.datacapture div.contentnavlast {
+		float:right;
+	}
+
+	div.datacapture div.contentnavnext {
+		float:right;
+	}
+
+	div.datacapture div.contentnavprev {
+		float:left;
+	}
+	div.datacapture div.contentnavfirst,
+	div.datacapture div.contentnavlast,
+	div.datacapture div.contentnavnext, 
+	div.datacapture div.contentnavprev
+	 {
+		background-color:#ccc;
+		cursor: pointer; 
+		margin:0px 2px 0px 2px;
+	}
+
+	/* list element of first level unordered list */
+	div.datacapture>ul>li {
+		text-transform:uppercase;
+	}
+
+	/* list element of first level unordered list */
+	div.datacapture>ul>li div.metadata {
+		border:1px dotted #ccc;
+		text-transform:lowercase;
+	}
+
+	div.datacapture>ul>li div.content {
+		border:1px dotted #ccc;
+		text-transform:lowercase;
+	}
+
+	/* All list elements */
+	div.datacapture li {
+		list-style-type:none;
+		background-color:#e7e9e6;
+		text-transform:none;
+		font-variant:small-caps;
+		border-bottom:1px solid #d9d9d3;
+	}
+
+	.clearafter:after {
+		content:".";
+		display:block;
+		height:0;
+		clear:both;
+		visibility:hidden;
+	}
+
+	.clearbefore:before {
+		content:".";
+		display:block;
+		height:0;
+		clear:both;
+		visibility:hidden;
+	}
+	
+	.money:before {
+		content: "$";
+		display:inline;
+	}	
