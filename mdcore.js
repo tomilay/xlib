@@ -791,7 +791,7 @@ if (typeof Object.create !== 'function') {
 	  	var returnValue = true;
 	  
 	  	// get a reference to the hash table of event handlers
-		var handlers = this.events[ type ];
+		var handlers = this.events ? this.events[ type ] : {};
 	  
 	  	// assemble the arguments
 	  	var args = [type, args];
