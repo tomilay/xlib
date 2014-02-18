@@ -27,7 +27,7 @@
 
 			options.size = options.size ? options.size : 1;
 
-			x$.bind( x$(">div.contentarea>ul", elem).getNode(), "click", userClick );
+			x$.bind( x$(">div.contentarea", elem).getNode(), "click", userClick );
 
 			// Reuse contentlist functionality
 			_contentList = new x$.contentList( elem, _array, options );
@@ -38,6 +38,29 @@
 			x$.bind( _contentList.getIterator() , "last", updateControls );
 		} );
 		
+		// Return the current row of the record from its screen position
+		function getCurrentRow ( pos ) {
+
+			var curPage = _contentList.getIterator( ).getCurrentPage( ),
+				pageSize = _contentList.getIterator( ).getPageSize( );
+
+			return ( curPage * pageSize ) - ( pageSize - pos );
+		}
+
+		// Return the current position on screen of the record affected by an event evt
+		function getItemPos ( evt ) {
+
+			var node = evt.target ? evt.target : undefined;
+			node = node || ( evt.srcElement ? evt.srcElement : undefined );
+
+			while( node && node.parentNode && node.id !== "listing" ) {
+				
+				node = node.parentNode;
+			}
+
+			return node.idx;
+		}
+
 		function userClick( evt ) {
 
 			id = evt.target ? evt.target.id : undefined;
@@ -62,21 +85,23 @@
 					break;
 				case "btn_submit":
 
-					alert( submit() ); //submit( );
+					alert( submit() ); 
 
 					preventDefault( evt );
 
 					break;
 				case "btn_update":
 
-					update( );
+					var pos = getItemPos( evt );
+
+					update( pos, getCurrentRow(pos) );
 
 					preventDefault( evt );
 
 					break;
 				case "btn_remove":
-
-					remove( );
+					
+					remove( getCurrentRow(getItemPos(evt)) );
 
 					preventDefault( evt );
 
@@ -86,7 +111,11 @@
 
 		function add ( ) {
 
-			var form = x$(">div.contentarea>ul>li>div.formcontainer>form", elem).getNode();
+			var form = x$( ">div.contentarea>ul>li>div.formcontainer>form", elem ).getNode( );
+			if( x$.isArray(form) )	{
+
+				form = form[ form.length - 1 ];
+			}	
 			var tmplt = new x$.template( form );
 			
 			// Add a new record 
@@ -98,34 +127,43 @@
 			_contentList.getIterator( ).gotoRow( _array.length )
 		};
 
-		function newRecord (  ) {
+		function newRecord ( ) {
 
-			var form = x$(">div.contentarea>ul>li>div.formcontainer>form", elem).getNode();
+			var form = x$( ">div.contentarea>ul>li>div.formcontainer>form", elem ).getNode( );
+
+			if( x$.isArray(form) )	{
+
+				form = form[ form.length - 1 ];
+			}	
 
 			form.reset( );
 
-			unsetState( "edit" );
-			setState( "new" );
+			unsetState( "edit", form );
+			setState( "new", form );
 
-			return false;
+			// return false;
 		};
 
-		function update ( ) {
+		function update ( idx, curRow ) {
 			
-			var curRow = _contentList.getIterator( ).getCurrentRow( );
-			var form = x$(">div.contentarea>ul>li>div.formcontainer>form", elem).getNode();
+			var form = x$( ">div.contentarea>ul>li>div.formcontainer>form", elem ).getNode( );
+
+			if ( x$.isArray(form) ) {
+
+				form = form[ idx ];
+			}
 			var tmplt = new x$.template( form );
 			
 			// Update the existing record
 			_array[ curRow ] = tmplt.getData( );
 
-			return true;
+			// return fa;
 		};
 
-		function remove ( ) {
+		function remove ( curRow ) {
 			
-			var curRow = _contentList.getIterator( ).getCurrentRow( );
-			var form = x$(">div.contentarea>ul>li>div.formcontainer>form", elem).getNode();
+			// var curRow = _contentList.getIterator( ).getCurrentRow( );
+			var form = x$( ">div.contentarea>ul>li>div.formcontainer>form", elem ).getNode( );
 
 			// Remove the existing record from _array
 			if ( _array[curRow] ) {
@@ -151,28 +189,24 @@
 			return JSON.stringify( _array );
 		};
 		
-		function unsetState( state ) {
+		function unsetState( state, elem ) {
 
 			var add = x$( "#add", elem ),
-				newRecord = x$( "#new_record", elem ),
 				update = x$( "#update", elem ),
 				remove = x$( "#remove", elem );
 
 			add.removeClass( state );
-			newRecord.removeClass( state );
 			update.removeClass( state );
 			remove.removeClass( state );
 		}
 
-		function setState( state ) {
+		function setState( state, elem ) {
 
 			var add = x$( "#add", elem ),
-				newRecord = x$( "#new_record", elem ),
 				update = x$( "#update", elem ),
 				remove = x$( "#remove", elem );
 
 			add.addClass( state );
-			newRecord.addClass( state );
 			update.addClass( state );
 			remove.addClass( state );
 		}
@@ -181,15 +215,26 @@
 
 			var form = x$(">div.contentarea>ul>li>div.formcontainer>form", elem).getNode();
 
+			// If there are no records, set the screen to new mode
 			if ( ! (args[1].data.getTotalRows() === 0) ) {
 
-				unsetState( "new" );
-				setState( "edit" );
+				if( x$.isArray(form) ) {
+
+					x$.each( form, function (idx, val) {
+
+						unsetState( "new", val );
+						setState( "edit", val );
+					} );
+				} else {
+
+					unsetState( "new", form );
+					setState( "edit", form );
+				}
 			} else {
 				form.reset( );
 
-				unsetState( "edit" );
-				setState( "new" );
+				unsetState( "edit", form );
+				setState( "new", form );
 			}
 		}
 

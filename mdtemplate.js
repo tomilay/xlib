@@ -29,10 +29,10 @@
 	var e = function ( elem ) {
 		
 		var lm = x$( "[data-bind]", elem ).getNode( ),
-			parent = elem.parentNode,
+			_parent = elem.parentNode,
 			copy = elem.cloneNode( true );
 
-		// To keep track of elements newly appended to the parent
+		// To keep track of elements already appended to the parent
 		var olds = [ ];
 
 		function addToParent( node, parentNode ) {
@@ -64,19 +64,23 @@
 		// Binding multirow-data
 		function bindRows( data ) {
 
+			// Remove the template node from the document if present
+			if ( elem ) 
+				x$( elem ).remove( );
+
 			for ( var i = 0; i < data.length; i++ ) {
 				
-				// Remove the template node from the document if present
-				if ( elem ) 
-					x$( elem ).remove( );
-
-				bindSingle( data[ i ] );
+				bindSingle( data[ i ], i+1 );
 			}
 		}
 
-		function bindSingle( data ) {
+		// idx is optional.  If included, it appends an index to the template node
+		function bindSingle( data, idx ) {
 
-			lm = x$( "[data-bind]", addToParent(copy.cloneNode(true), parent)).getNode( );
+ 			var node = addToParent(copy.cloneNode(true), _parent);
+			lm = x$( "[data-bind]", node ).getNode( );
+
+			if ( idx ) node.idx = idx - 1;
 
 			if ( lm && x$.isArray(lm)  && lm.length > 0 ) {
 

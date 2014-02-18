@@ -29,11 +29,12 @@
 		var _tmpNav = _navPages ? new x$.template( _navPages.getNode() ) : undefined,
 			_tmpList = new x$.template( _listing.getNode() );
 
-		var getIterator = function ( ) {
+		function getIterator ( ) {
 
 			return _data;
 		};
-		var updateDisplay = function ( ) {
+
+		function updateDisplay ( ) {
 
 			if ( _navPages ) {
 
