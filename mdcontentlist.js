@@ -52,16 +52,24 @@
 
 			switch( self.className ) {
 				case "contentnavprev":
+
 					_data.previous( _size );
+
 					break;
 				case "contentnavnext":
+
 					_data.next( _size );
+
 					break;
 				case "contentnavfirst":
+
 					_data.first( _size );
 					break;
+
 				case "contentnavlast":
+
 					_data.last( _size );
+
 					break;
 			}
 

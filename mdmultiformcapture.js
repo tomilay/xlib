@@ -162,7 +162,6 @@
 
 		function remove ( curRow ) {
 			
-			// var curRow = _contentList.getIterator( ).getCurrentRow( );
 			var form = x$( ">div.contentarea>ul>li>div.formcontainer>form", elem ).getNode( );
 
 			// Remove the existing record from _array
@@ -212,6 +211,13 @@
 		}
 
 		function updateControls( args ) {
+			
+			var iter = _contentList.getIterator( );
+
+			// Sets the iterator pointer to the right page - because the navigation moves through the rows one by one(not page size by page size)
+			iter.gotoPage( iter.getCurrentPage() );
+
+			_contentList.updateDisplay( );
 
 			var form = x$(">div.contentarea>ul>li>div.formcontainer>form", elem).getNode();
 
