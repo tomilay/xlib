@@ -7,53 +7,46 @@
 //************************************************************************ 		
 (function(o) {
 
-	var setHandler = function( listNode ) {
-		 var ulNode = x$(">ul", listNode).getNode();
+	var toggleMenu = function( evt ) {
 
-		 if( ulNode !== undefined ) {
-		 	listNode.onclick = toggleMenu;
-		 } else {
-		 	listNode.onclick = stopBubble;
-		 }
-	}
+		var node = evt.target ? evt.target : undefined;
+			node = node || ( evt.srcElement ? evt.srcElement : undefined );
 
-	function stopBubble( e ) {
-		if ( !e ) var e = window.event;
-		if ( e ) e.cancelBubble = true;
-		if ( e && e.stopPropagation ) e.stopPropagation();
-	}
-
-	var toggleMenu = function(evt) {
-		var self = evt ? evt.currentTarget : this;
-
-		if( !x$(">ul", this).hasClass("visib") ){
-			setTimeout( function() { x$(">ul", self).addClass("visib"); },100 )
-		} else {
-			setTimeout( function() { x$(">ul", self).removeClass("visib"); },100 )
+		while ( node && node.parentNode && node.tagName !== "LI" ) {
+		
+			node = node.parentNode;
 		}
 
-		stopBubble( evt );
+		if ( x$( ">ul", node ).getNode( ) ) {
+
+			var ul = x$( ">ul", node );
+
+			if ( ! ul.hasClass("visib") ){
+
+				setTimeout( function() { ul.addClass("visib"); }, 100 );
+			} else {
+
+				setTimeout( function() { ul.removeClass("visib"); }, 100 );
+			}
+		}
 	}
 
-	var e = {
-		scrollbar: function( ) {
-			var ul, li;
+	var e = function ( elem ) {
 
-			if ( this.elem ) {
-				ul = x$( ">ul", this.elem );
+			var ul;
+
+			if ( elem ) {
+
+				ul = x$( ">ul", elem );
 			}
 
-			if ( ul ) {
-				li = x$( "li" ).getNode();
+			if ( ul.getNode() ) {
 
-				for( i = 0; i < li.length; i++ ) {
-					setHandler( li[ i ] );
-				}
+				x$.bind( ul.getNode( ) , "click", toggleMenu );
 			}
 
-			return this;
-		}
+			return { };
 	};
 
-	o.extend(o.fn, e);
+	o.verticalBar = o.verticalBar || e;
 }(x$));
