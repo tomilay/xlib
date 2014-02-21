@@ -58,16 +58,16 @@
 
 		<ul>
 			<li id="listing" name="listing">
-				<div class="metadata">
-					<h3 class="price" data-bind="price"><span data-bind="price"></span></h3>
-					<div class="address">
-						<h4 class="street">
-							<a href="/detail/153-06067477-27538-Route-14-BARRINGTON-IL-60010/"><span data-bind="address"></span></a>
-						</h4>
-					</div>
-				</div>
-
 				<div class="content">
+					<div class="metadata">
+						<h3 class="price" data-bind="price"><span data-bind="price"></span></h3>
+						<div class="address">
+							<h4 class="street">
+								<a href="/detail/153-06067477-27538-Route-14-BARRINGTON-IL-60010/"><span data-bind="address"></span></a>
+							</h4>
+						</div>
+					</div>
+
 					<div class="photo">
 						<a href="/detail/153-06067477-27538-Route-14-BARRINGTON-IL-60010/"><img id="listingImage-06067477" data-bind="photo" height="85" width="109" alt="27538 Route 14, BARRINGTON, IL  60010" data-count="0">
 						<div class="view-photos-btn">View Details</div></a>
@@ -145,34 +145,36 @@
 
 		<ul>
 			<li id="listing1" name="listing1">
-				<div class="metadata">
-					<h3 class="price" data-bind="price"><span data-bind="price"></span></h3>
-					<div class="address">
-						<h4 class="street">
-							<a href="/detail/153-06067477-27538-Route-14-BARRINGTON-IL-60010/"><span data-bind="address"></span></a>
-						</h4>
-					</div>
-				</div>
-
 				<div class="content">
-					<div class="photo">
-						<a href="/detail/153-06067477-27538-Route-14-BARRINGTON-IL-60010/"><img id="listingImage-06067477" data-bind="photo" height="85" width="109" alt="27538 Route 14, BARRINGTON, IL  60010" data-count="0">
-						<div class="view-photos-btn">View Details</div></a>
+					<div class="metadata">
+						<h3 class="price" data-bind="price"><span data-bind="price"></span></h3>
+						<div class="address">
+							<h4 class="street">
+								<a href="/detail/153-06067477-27538-Route-14-BARRINGTON-IL-60010/"><span data-bind="address"></span></a>
+							</h4>
+						</div>
 					</div>
-					<div class="info">
-						<div class="data">
-							<ul class="attributes clearfix">
 
-								<li><label>City:</label><span data-bind="city"></span>
-								</li>
+					<div class="content">
+						<div class="photo">
+							<a href="/detail/153-06067477-27538-Route-14-BARRINGTON-IL-60010/"><img id="listingImage-06067477" data-bind="photo" height="85" width="109" alt="27538 Route 14, BARRINGTON, IL  60010" data-count="0">
+							<div class="view-photos-btn">View Details</div></a>
+						</div>
+						<div class="info">
+							<div class="data">
+								<ul class="attributes clearfix">
 
-								<li><label>Listing #:</label> <span>06067477</span></li>
+									<li><label>City:</label><span data-bind="city"></span>
+									</li>
 
-								<li><label>Status:</label> <span data-bind="status"></span></li>
+									<li><label>Listing #:</label> <span>06067477</span></li>
 
-							</ul>
-							<div>
-								<label>Description:</label> <span data-bind="description"></span>
+									<li><label>Status:</label> <span data-bind="status"></span></li>
+
+								</ul>
+								<div>
+									<label>Description:</label> <span data-bind="description"></span>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -196,13 +198,68 @@ function update(){
 		houses = x$( "#houses" ),
 		hotels = x$( "#hotels" );
 		
-	var options = { size: 1, navpages: x$(".contentnavpages>span", houses.getNode()) }; // 1 row per page and the element on which to put page info
+	var options = { size: 1, navpages: x$(".contentnavpages>span", houses.getNode()), bindHandler:move }; // 1 row per page and the element on which to put page info
 	var o = new x$.contentList( houses.getNode(), arr, options );
-	options =  { size: 2, navpages: x$(".contentnavpages>span", hotels.getNode()) };
+	options =  { size: 2, navpages: x$(".contentnavpages>span", hotels.getNode()), bindHandler:move };
 	var o1 = new x$.contentList( hotels.getNode(), arr, options );
 
-	o.getIterator( ).gotoPage( 2 );
-	o.updateDisplay();
+	this.sID = 0;
+}
+
+function prettyScroll ( elem ) {
+
+    var 
+        c = elem,
+        w = c.offsetWidth,
+        x = c.offsetLeft,
+        t = c.offsetLeft  + c.offsetWidth, 
+        dx = 10;
+    
+    if(t > w) 
+    	t = w;
+    else if (t < 0) 
+    	t = 0;
+    
+    if(Math.abs(t - x) <= dx) 
+    	return c.style.scrollLeft = t;
+    
+    if(t > x) 
+    	c.style.scrollLeft = (x + dx) + "px";
+    else 
+    	c.style.scrollLeft = (x - dx) + "px";
+    
+    setTimeout( function() { prettyScroll(elem)}, 15 );
+}
+
+function bounce(progress) {
+  for(var a = 0, b = 1, result; 1; a += b, b /= 2) {
+    if (progress >= (7 - 4 * a) / 11) {
+      return -Math.pow((11 - 6 * a - 11 * progress) / 4, 2) + Math.pow(b, 2);
+    }
+  }
+}
+
+function makeEaseOut(delta) { 
+  return function(progress) {
+    return 1 - delta(1 - progress)
+  }
+}
+
+var bounceEaseOut = makeEaseOut(bounce);
+
+function move( element ) {
+  var to = 2;
+   
+  x$.animate( {
+    delay: 5,
+    duration: 500,
+    delta: bounceEaseOut ,
+    step: function(delta) {
+      element.style.left = to*delta + "px";
+      element.style.top = to*delta + "px"   
+    }
+  } );
+   
 }
 
 update();

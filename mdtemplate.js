@@ -30,7 +30,8 @@
 		
 		var lm = x$( "[data-bind]", elem ).getNode( ),
 			_parent = elem.parentNode,
-			copy = elem.cloneNode( true );
+			copy = elem.cloneNode( true ),
+			_self = this;
 
 		// To keep track of elements already appended to the parent
 		var olds = [ ];
@@ -70,7 +71,7 @@
 
 			for ( var i = 0; i < data.length; i++ ) {
 				
-				bindSingle( data[ i ], i+1 );
+				bindSingle.call( this, data[ i ], i+1 );
 			}
 		}
 
@@ -121,6 +122,8 @@
 						return { "inc":group.length-1 };
 				} );
 			}
+
+			x$.triggerHandler( this, "bindSingle", true, node );
 		}
 
 		var applyBindings = function ( data ) {
@@ -132,7 +135,7 @@
 
 				if( x$.isArray(data) ){
 
-					bindRows( data )
+					bindRows.call( this, data )
 
 				}else{
 
@@ -140,7 +143,7 @@
 					if ( elem ) 
 						x$( elem ).remove( );
 
-				 	bindSingle( data );
+				 	bindSingle.call( this,  data );
 				}
 			}
 		};

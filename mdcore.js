@@ -609,6 +609,31 @@ if (typeof Object.create !== 'function') {
 	};
 
 	// ************************************************************************
+	// ANIMATE FUNCTION - TAKES {delay, duration, delta, step} AS opts
+	// ************************************************************************
+	x$.animate = function ( opts ) {
+   
+  		var start = new Date ,
+  			id = setInterval( function() {
+
+    		var timePassed = new Date - start,
+    			progress = timePassed / opts.duration;
+ 
+    		if ( progress > 1 ) progress = 1;
+     
+    		var delta = opts.delta( progress );
+			
+    		opts.step( delta );
+     
+    		if ( progress == 1 ) {
+
+      			clearInterval( id );
+    		}
+  		}, opts.delay || 10 );
+	};
+
+
+	// ************************************************************************
 	// FILTER FUNCTION - FILTER A CONTAINER(ARRAY...) ACCORDING TO A FUNCTION
 	// ************************************************************************
 	x$.filter = function ( obj, func ) {

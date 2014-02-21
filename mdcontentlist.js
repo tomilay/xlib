@@ -29,6 +29,16 @@
 		var _tmpNav = _navPages ? new x$.template( _navPages.getNode() ) : undefined,
 			_tmpList = new x$.template( _listing.getNode() );
 
+		x$.bind( _tmpList, "bindSingle", bindHandler);
+
+		function bindHandler ( args ) { 
+			
+			if ( options.bindHandler ) {
+
+				options.bindHandler( args[ 1 ].childNodes[0] );
+			}
+		}
+		
 		function getIterator ( ) {
 
 			return _data;

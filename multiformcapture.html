@@ -69,191 +69,200 @@
 
 		<ul>
 			<li id="listing" name="listing">
-				<div class="metadata">
-					<h3 class="details" data-bind="details">Some Information About The Data Capture</h3>
-					<div>A Basic Form</div>
-					<div>Please fill this form and submit</div>
+
+				<!--Start of content div-->
+
+				<div class="content">
+
+					<div class="metadata">
+						<h3 class="details" data-bind="details">Some Information About The Data Capture</h3>
+						<div>A Basic Form</div>
+						<div>Please fill this form and submit</div>
+					</div>
+
+					<!--Start of formcontainer div-->
+
+					<div class="formcontainer">
+						<form method="post">
+
+							<!--SINGLE LINE TEXT FIELD-->
+
+							<div class="clearfix">
+
+								<label>Enter your First Name.  <em>(The common appelation)</em></label>
+
+								<input id="firstname" name="firstName" data-bind="firstname" type="text" sze="35"/>
+
+							</div>
+
+							<!--MULTI-LINE TEXT FIELD-->
+
+							<div class="clearfix">
+
+								<label>Description</label>
+
+								<textarea name="description" data-bind="description" rows="6" cols="26"></textarea>
+
+							</div>
+
+							<!--PASSWORD TEXT FIELD-->
+
+							<div class="clearfix">
+
+								<label>Password</label>
+
+								<input name="password" data-bind="password" type="password" sze="35"/>
+
+							</div>
+
+							<!--RADIO BUTTONS-->
+
+							<div class="clearfix">
+
+								<label>Pick One</label>
+
+								<div class="buttongroup clearfix"><!--box for buttons group-->
+
+									<div class="clearfix">
+
+										<input name="radioset" data-bind="radioset" type="radio" size="35" value="Choice_1" checked="checked"/>
+
+										<label>Choice 1</label>
+
+									</div>
+
+									<div class="clearfix">
+
+										<input name="radioset" data-bind="radioset" type="radio" size="35" value="Choice_2"/>
+
+										<label>Choice 2</label>
+										
+									</div>
+
+									<div class="clearfix">
+
+										<input name="radioset" data-bind="radioset" type="radio" size="35" value="Choice_3"/>
+
+										<label>Choice 3</label>
+										
+									</div>
+
+								</div>
+
+							</div>
+
+							<!--END OF RADIO BUTTONS-->
+
+							<!--CHECK BOXES-->
+
+							<div class="clearfix">
+
+								<label>Pick One</label>
+
+								<div class="buttongroup clearfix"><!--box for buttons group-->
+
+									<div class="clearfix">
+
+										<input name="boxset" data-bind="checkbox" type="checkbox" size="35" value="Choice_1"/>
+
+										<label>Choice 1</label>
+
+									</div>
+
+									<div class="clearfix">
+
+										<input name="boxset" data-bind="checkbox" type="checkbox" size="35" value="Choice_2"/>
+
+										<label>Choice 2</label>
+										
+									</div>
+
+									<div class="clearfix">
+
+										<input name="boxset" data-bind="checkbox" type="checkbox" size="35" value="Choice_3"/>
+
+										<label>Choice 3</label>
+										
+									</div>
+
+								</div>
+
+							</div>
+
+							<!--END OF CHECK BOXES-->
+							
+							<!--DROP DOWN MENU-->
+							
+							<div class="clearfix">
+
+								<label>Pick from menu and then click submit below</label>
+
+								<select name="guitar" data-bind="guitar">
+
+									<option value="no_selection_made">Pick your favorite guitar</option>
+
+									<option value="gibson">Gibson</option>
+
+									<option value="fender">Fender</option>
+
+									<option value="taylor">Taylor</option>
+
+								</select>
+
+							</div>
+
+							<div class="clearfix">
+
+								<label>Pick a car then click submit below</label>
+
+								<select data-bind="car" multiple="multiple">
+								 	
+								 	<option value="1">Volvo</option>
+								  
+								  	<option value="2">Saab</option>
+								  
+								  	<option value="3">Mercedes</option>
+								  
+								  	<option value="4">Audi</option>
+
+								</select>
+
+							</div>
+							<!--END OF DROP DOWN MENU-->
+
+							<!--SUBMIT BUTTON-->
+
+							<div class="clearfix">
+
+								<div class="new" id="add">
+
+									<button id="btn_add">Add</button>
+
+								</div>
+
+								<div class="new" id="update">
+
+									<button id="btn_update">Update</button>
+
+								</div>
+
+								<div class="new" id="remove">
+
+									<button id="btn_remove">Remove</button>
+
+								</div>
+
+							</div>
+
+						</form>
+
+					</div>
+
+					<!--End of formcontainer div-->
+
 				</div>
 
-				<!--Start of formcontainer div-->
-
-				<div class="formcontainer">
-					<form method="post">
-
-						<!--SINGLE LINE TEXT FIELD-->
-
-						<div class="clearfix">
-
-							<label>Enter your First Name.  <em>(The common appelation)</em></label>
-
-							<input id="firstname" name="firstName" data-bind="firstname" type="text" sze="35"/>
-
-						</div>
-
-						<!--MULTI-LINE TEXT FIELD-->
-
-						<div class="clearfix">
-
-							<label>Description</label>
-
-							<textarea name="description" data-bind="description" rows="6" cols="26"></textarea>
-
-						</div>
-
-						<!--PASSWORD TEXT FIELD-->
-
-						<div class="clearfix">
-
-							<label>Password</label>
-
-							<input name="password" data-bind="password" type="password" sze="35"/>
-
-						</div>
-
-						<!--RADIO BUTTONS-->
-
-						<div class="clearfix">
-
-							<label>Pick One</label>
-
-							<div class="buttongroup clearfix"><!--box for buttons group-->
-
-								<div class="clearfix">
-
-									<input name="radioset" data-bind="radioset" type="radio" size="35" value="Choice_1" checked="checked"/>
-
-									<label>Choice 1</label>
-
-								</div>
-
-								<div class="clearfix">
-
-									<input name="radioset" data-bind="radioset" type="radio" size="35" value="Choice_2"/>
-
-									<label>Choice 2</label>
-									
-								</div>
-
-								<div class="clearfix">
-
-									<input name="radioset" data-bind="radioset" type="radio" size="35" value="Choice_3"/>
-
-									<label>Choice 3</label>
-									
-								</div>
-
-							</div>
-
-						</div>
-
-						<!--END OF RADIO BUTTONS-->
-
-						<!--CHECK BOXES-->
-
-						<div class="clearfix">
-
-							<label>Pick One</label>
-
-							<div class="buttongroup clearfix"><!--box for buttons group-->
-
-								<div class="clearfix">
-
-									<input name="boxset" data-bind="checkbox" type="checkbox" size="35" value="Choice_1"/>
-
-									<label>Choice 1</label>
-
-								</div>
-
-								<div class="clearfix">
-
-									<input name="boxset" data-bind="checkbox" type="checkbox" size="35" value="Choice_2"/>
-
-									<label>Choice 2</label>
-									
-								</div>
-
-								<div class="clearfix">
-
-									<input name="boxset" data-bind="checkbox" type="checkbox" size="35" value="Choice_3"/>
-
-									<label>Choice 3</label>
-									
-								</div>
-
-							</div>
-
-						</div>
-
-						<!--END OF CHECK BOXES-->
-						
-						<!--DROP DOWN MENU-->
-						
-						<div class="clearfix">
-
-							<label>Pick from menu and then click submit below</label>
-
-							<select name="guitar" data-bind="guitar">
-
-								<option value="no_selection_made">Pick your favorite guitar</option>
-
-								<option value="gibson">Gibson</option>
-
-								<option value="fender">Fender</option>
-
-								<option value="taylor">Taylor</option>
-
-							</select>
-
-						</div>
-
-						<div class="clearfix">
-
-							<label>Pick a car then click submit below</label>
-
-							<select data-bind="car" multiple="multiple">
-							 	
-							 	<option value="1">Volvo</option>
-							  
-							  	<option value="2">Saab</option>
-							  
-							  	<option value="3">Mercedes</option>
-							  
-							  	<option value="4">Audi</option>
-
-							</select>
-
-						</div>
-						<!--END OF DROP DOWN MENU-->
-
-						<!--SUBMIT BUTTON-->
-
-						<div class="clearfix">
-
-							<div class="new" id="add">
-
-								<button id="btn_add">Add</button>
-
-							</div>
-
-							<div class="new" id="update">
-
-								<button id="btn_update">Update</button>
-
-							</div>
-
-							<div class="new" id="remove">
-
-								<button id="btn_remove">Remove</button>
-
-							</div>
-
-						</div>
-
-					</form>
-
-				</div>
-
-				<!--End of formcontainer div-->
+				<!--End of content div-->
 			</li>
 		</ul>
 

@@ -19,7 +19,8 @@
 		var 
 			_contentList, 
 			_array = [ ],
-			elem;
+			elem,
+			formSel = ">div.contentarea>ul>li>div.content>div.formcontainer>form";
 
 		x$.ready( function ( ) {
 
@@ -111,7 +112,7 @@
 
 		function add ( ) {
 
-			var form = x$( ">div.contentarea>ul>li>div.formcontainer>form", elem ).getNode( );
+			var form = x$( formSel, elem ).getNode( );
 			if( x$.isArray(form) )	{
 
 				form = form[ form.length - 1 ];
@@ -129,7 +130,7 @@
 
 		function newRecord ( ) {
 
-			var form = x$( ">div.contentarea>ul>li>div.formcontainer>form", elem ).getNode( );
+			var form = x$( formSel, elem ).getNode( );
 
 			if( x$.isArray(form) )	{
 
@@ -146,7 +147,7 @@
 
 		function update ( idx, curRow ) {
 			
-			var form = x$( ">div.contentarea>ul>li>div.formcontainer>form", elem ).getNode( );
+			var form = x$( formSel, elem ).getNode( );
 
 			if ( x$.isArray(form) ) {
 
@@ -162,7 +163,7 @@
 
 		function remove ( curRow ) {
 			
-			var form = x$( ">div.contentarea>ul>li>div.formcontainer>form", elem ).getNode( );
+			var form = x$( formSel, elem ).getNode( );
 
 			// Remove the existing record from _array
 			if ( _array[curRow] ) {
@@ -219,7 +220,7 @@
 
 			_contentList.updateDisplay( );
 
-			var form = x$(">div.contentarea>ul>li>div.formcontainer>form", elem).getNode();
+			var form = x$( formSel, elem ).getNode();
 
 			// If there are no records, set the screen to new mode
 			if ( ! (args[1].data.getTotalRows() === 0) ) {

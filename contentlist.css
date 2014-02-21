@@ -15,6 +15,7 @@
 		margin-top:20px;
 		font-size:.9em;
 		border:1px dotted black;
+		/*overflow:auto;*/
 	}
 
 	/* Anchor inside a div with class = contentlist */
@@ -26,6 +27,13 @@
 
 	div.contentlist a:hover {
 		color:#f33;
+	}
+
+	div.contentlist>div.contentarea>ul>li>div.content {
+		position:relative;
+		/*border:1px dotted silver;*/
+		width:390px;
+		height:100%;
 	}
 
 	div.contentlist div.contentnavfirst {
@@ -112,6 +120,11 @@
 		display:block;
 		background-color:blue;
 	}
+
+/*	div.contentarea>ul>li {
+		border:2px solid gray;
+		margin-left:90px;
+	}*/
 
 	.clearafter:after {
 		content:".";
