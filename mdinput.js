@@ -39,6 +39,26 @@
 			return "tagName";
 	}
 
+	function bindValueToControl( val, sel ) {
+
+		x$.each( val, function( i, v ) {
+
+			function comp( opt ) {
+
+				if ( opt.value === v ) {
+					
+					if ( "selected" in opt )
+						opt.selected = true;
+
+					if ( "checked" in opt )
+						opt.checked = true;
+				}
+			}
+
+			x$.map( sel, comp );
+		} );
+	}
+
 	var e = function ( inpt ) {
 
 		var pa = processAs( inpt );
@@ -162,18 +182,23 @@
 
 							break;
 						case "select-multiple":
-							unset( inpt );
+							// inpt.length = 0 means we populate the control rather than select items on it
+							if( inpt.length > 0 ) {
+							
+								unset( inpt );
 
-							x$.each( val, function( i, v ) {
+								bindValueToControl( val, inpt );
+							} else {
+								//  Add the values to the control
+								x$.each( val, function ( i, v ) {
 
-								function comp( opt ) {
+									if( i !== "selected" )
+										inpt.options.add(new Option(v, i));
+								});
 
-									if ( opt.value === v )
-										opt.selected = true;
-								}
+								bindValueToControl( val[ "selected" ], inpt );
+							}
 
-								x$.map( inpt, comp );
-							} );
 							break;
 						case "textarea":
 							inpt.value = val;
@@ -184,16 +209,8 @@
 				case "array":
 					unset( inpt );
 
-					x$.each( val, function( i, v ) {
+					bindValueToControl( val, inpt );
 
-						function comp( opt ) {
-
-							if ( opt.value === v )
-								opt.checked = true;
-						}
-
-						x$.map( inpt, comp );
-					} );
 					break;
 				case "tagName":
 					switch( inpt.tagName.toUpperCase() ) {

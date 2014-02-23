@@ -19,7 +19,8 @@
 		var 
 			_contentList, 
 			_array = [ ],
-			elem;
+			elem,
+			formSel = ">div.contentarea>ul>li>div.content>div.formcontainer>form";
 
 		x$.ready( function ( ) {
 
@@ -86,7 +87,7 @@
 
 		function add ( ) {
 
-			var form = x$(">div.contentarea>ul>li>div.formcontainer>form", elem).getNode();
+			var form = x$( formSel, elem ).getNode();
 			var tmplt = new x$.template( form );
 			
 			// Add a new record 
@@ -100,7 +101,7 @@
 
 		function newRecord (  ) {
 
-			var form = x$(">div.contentarea>ul>li>div.formcontainer>form", elem).getNode();
+			var form = x$( formSel, elem ).getNode();
 
 			form.reset( );
 
@@ -113,7 +114,7 @@
 		function update ( ) {
 			
 			var curRow = _contentList.getIterator( ).getCurrentRow( );
-			var form = x$(">div.contentarea>ul>li>div.formcontainer>form", elem).getNode();
+			var form = x$( formSel, elem ).getNode();
 			var tmplt = new x$.template( form );
 			
 			// Update the existing record
@@ -125,7 +126,7 @@
 		function remove ( ) {
 			
 			var curRow = _contentList.getIterator( ).getCurrentRow( );
-			var form = x$(">div.contentarea>ul>li>div.formcontainer>form", elem).getNode();
+			var form = x$( formSel, elem ).getNode();
 
 			// Remove the existing record from _array
 			if ( _array[curRow] ) {
@@ -179,7 +180,7 @@
 
 		function updateControls( args ) {
 
-			var form = x$(">div.contentarea>ul>li>div.formcontainer>form", elem).getNode();
+			var form = x$( formSel, elem ).getNode();
 
 			if ( ! (args[1].data.getTotalRows() === 0) ) {
 

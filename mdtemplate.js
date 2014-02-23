@@ -95,7 +95,7 @@
 
 						if ( ! (val.type) ) return false;
 
-						if ( val.type === value.type && val.name === value.name )
+						if ( val.type === value.type && val.name === value.name && val.name !== "" )
 							return true;
 					}
 					
