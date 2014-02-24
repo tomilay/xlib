@@ -142,6 +142,10 @@
 							ret = inpt.src;
 
 							break;
+						case "A":
+							ret = inpt.href;
+							
+							break;
 					}
 					break;
 			}
@@ -193,7 +197,7 @@
 								x$.each( val, function ( i, v ) {
 
 									if( i !== "selected" )
-										inpt.options.add(new Option(v, i));
+										inpt.options.add( new Option(v, i) );
 								});
 
 								bindValueToControl( val[ "selected" ], inpt );
@@ -224,6 +228,10 @@
 							break;
 						case "IMG":
 							inpt.src = val;
+
+							break;
+						case "A":
+							inpt.href = val;
 
 							break;
 					}
