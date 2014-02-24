@@ -146,6 +146,10 @@
 							ret = inpt.href;
 							
 							break;
+						case "LABEL":
+							ret = inpt.innerHTML;
+
+							break;
 					}
 					break;
 			}
@@ -232,6 +236,10 @@
 							break;
 						case "A":
 							inpt.href = val;
+
+							break;
+						case "LABEL":
+							inpt.innerHTML = val;
 
 							break;
 					}

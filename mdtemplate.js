@@ -26,6 +26,56 @@
 			return -1
 	}
 
+	function bindDataToNode( data, node ) {
+
+		var lm = x$( "[data-bind]", node ).getNode( );
+
+		if ( lm && x$.isArray(lm)  && lm.length > 0 ) {
+
+			// Sort on type and name.  Ensures appropriate grouped element(radio/checkbox groups) ordering.
+			lm.sort( typeSort );
+
+			x$.each( lm, function get( index, value ) {
+
+				// filters out elements that share a group with the current value
+				function filterGroup( val ) {
+
+					if ( ! (val.type) ) return false;
+
+					if ( val.type === value.type && val.name === value.name && val.name !== "" )
+						return true;
+				}
+				
+				// If the element is a part of a group, the group array will be filled with the whole lot of them.
+				var inpt,
+					group = x$.filter( lm, filterGroup );
+
+				if ( group.length > 1 ) {
+
+					inpt = new x$.input( group );
+				} else {
+
+					inpt = new x$.input( value );
+				}
+
+				// Set values only for data fields with an actual value.  Prevents inadvertent overwriting.
+				if ( data[inpt.getDataBind()]  || data[inpt.getDataBind()] === "" ) {
+
+					inpt.setValue( data[inpt.getDataBind()] );
+				}
+
+				// If the element is part of a group, permit the rest of them to be looped over
+				if ( group.length > 1 )
+					return { "inc":group.length-1 };
+			} );
+		} else if ( lm ) {
+
+			var inpt = new x$.input( lm );
+
+			inpt.setValue( data[inpt.getDataBind()] );
+		}
+	}
+
 	var e = function ( elem ) {
 		
 		var lm = x$( "[data-bind]", elem ).getNode( ),
@@ -79,49 +129,10 @@
 		function bindSingle( data, idx ) {
 
  			var node = addToParent(copy.cloneNode(true), _parent);
-			lm = x$( "[data-bind]", node ).getNode( );
 
 			if ( idx ) node.idx = idx - 1;
 
-			if ( lm && x$.isArray(lm)  && lm.length > 0 ) {
-
-				// Sort on type and name.  Ensures appropriate grouped element(radio/checkbox groups) ordering.
-				lm.sort( typeSort );
-
-				x$.each( lm, function get( index, value ) {
-
-					// filters out elements that share a group with the current value
-					function filterGroup( val ) {
-
-						if ( ! (val.type) ) return false;
-
-						if ( val.type === value.type && val.name === value.name && val.name !== "" )
-							return true;
-					}
-					
-					// If the element is a part of a group, the group array will be filled with the whole lot of them.
-					var inpt,
-						group = x$.filter( lm, filterGroup );
-
-					if ( group.length > 1 ) {
-
-						inpt = new x$.input( group );
-					} else {
-
-						inpt = new x$.input( value );
-					}
-
-					// Set values only for data fields with an actual value.  Prevents inadvertent overwriting.
-					if ( data[inpt.getDataBind()]  || data[inpt.getDataBind()] === "" ) {
-
-						inpt.setValue( data[inpt.getDataBind()] );
-					}
-
-					// If the element is part of a group, permit the rest of them to be looped over
-					if ( group.length > 1 )
-						return { "inc":group.length-1 };
-				} );
-			}
+			bindDataToNode( data, node );
 
 			x$.triggerHandler( this, "bindSingle", true, node );
 		}
@@ -194,9 +205,11 @@
 
 		return {
 			applyBindings: applyBindings,
-			getData: getData,
+			getData: getData
 		}
 	};
+	
+	e.bindDataToNode = bindDataToNode;
 
 	o.template = o.template || e;
 }(x$));

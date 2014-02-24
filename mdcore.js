@@ -460,8 +460,8 @@ if (typeof Object.create !== 'function') {
 	// STATIC EACH FUNCTION - INSPIRED BY jQuery's each
 	// ************************************************************************
 	x$.each = function (lm, callback, childNodes) {
-		var object = lm, name, i = 0,
-			length = object.length,
+		var object = lm, name, i = 0;
+		var	length = object ? object.length : undefined,
 			isObj = length === undefined || typeof object === 'function';
 
 		if (isObj) {
