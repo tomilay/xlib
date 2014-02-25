@@ -186,7 +186,20 @@
 
 							break;
 						case "select-one":
-							inpt.value = val;
+							
+							if( inpt.length > 0 ) {
+
+								inpt.value = val;
+							} else {
+								//  Add the values to the control
+								x$.each( val, function ( i, v ) {
+
+									if( i !== "selected" )
+										inpt.options.add( new Option(v, i) );
+								});
+
+								bindValueToControl( val[ "selected" ], inpt );
+							}
 
 							break;
 						case "select-multiple":
