@@ -282,13 +282,12 @@ if (typeof Object.create !== 'function') {
 				if(this.elem){
 					if(this.elem.removeNode && this.elem.parentNode){
 						this.elem.removeNode(true);
-						return this.elem.parentNode;
 					}
 					if(this.elem.removeChild && this.elem.parentNode){
 						this.elem.parentNode.removeChild(this.elem);
-						return this.elem.parentNode;
 					}
 				}
+				return this;
 			},
 
 			// ************************************************************************

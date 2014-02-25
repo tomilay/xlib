@@ -80,11 +80,12 @@
 		
 		var lm = x$( "[data-bind]", elem ).getNode( ),
 			_parent = elem.parentNode,
-			copy = elem.cloneNode( true ),
-			_self = this;
+			_copy = elem.cloneNode( true ),
 
-		// To keep track of elements already appended to the parent
-		var olds = [ ];
+			// To keep track of elements already appended to the parent
+			// The databind removes an old/template node from the parent 
+			// node and replaces it with a _copy of the original element
+			olds = [ ];
 
 		function addToParent( node, parentNode ) {
 
@@ -107,6 +108,9 @@
 			for ( var i = 0; i < olds.length; i++ ) {
 
 				x$( olds[ i ] ).remove( );
+
+				// set the node to null
+				olds[ i ] = null;
 			}
 
 			olds = [ ];
@@ -115,9 +119,14 @@
 		// Binding multirow-data
 		function bindRows( data ) {
 
-			// Remove the template node from the document if present
-			if ( elem ) 
+			// Remove the template node from the document if present.
+			// It will be present on the initial attempt at binding.
+			if ( elem ) {
+
 				x$( elem ).remove( );
+
+				elem = null;
+			}
 
 			for ( var i = 0; i < data.length; i++ ) {
 				
@@ -128,7 +137,7 @@
 		// idx is optional.  If included, it appends an index to the template node
 		function bindSingle( data, idx ) {
 
- 			var node = addToParent(copy.cloneNode(true), _parent);
+ 			var node = addToParent(_copy.cloneNode(true), _parent);
 
 			if ( idx ) node.idx = idx - 1;
 
@@ -141,7 +150,7 @@
 			
 			if( ! x$.isEmpty(data) ) {
 				
-				// Remove any old copies of binds from document
+				// Remove any old copies of bound nodes from document
 				emptyOlds( );
 
 				if( x$.isArray(data) ){
@@ -150,9 +159,14 @@
 
 				}else{
 
-					// Remove the template node from the document if present
-					if ( elem ) 
+					// Remove the template node from the document if present.
+					// It will be present on the initial attempt at binding.
+					if ( elem ) {
+
 						x$( elem ).remove( );
+
+						elem = null;
+					}
 
 				 	bindSingle.call( this,  data );
 				}
