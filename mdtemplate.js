@@ -28,52 +28,57 @@
 
 	function bindDataToNode( data, node ) {
 
-		var lm = x$( "[data-bind]", node ).getNode( );
+		if ( data ) {
+			
+			var lm = x$( "[data-bind]", node ).getNode( );
 
-		if ( lm && x$.isArray(lm)  && lm.length > 0 ) {
+			if ( lm && x$.isArray(lm)  && lm.length > 0 ) {
 
-			// Sort on type and name.  Ensures appropriate grouped element(radio/checkbox groups) ordering.
-			lm.sort( typeSort );
+				// Sort on type and name.  Ensures appropriate grouped element(radio/checkbox groups) ordering.
+				lm.sort( typeSort );
 
-			x$.each( lm, function get( index, value ) {
+				x$.each( lm, function get( index, value ) {
 
-				// filters out elements that share a group with the current value
-				function filterGroup( val ) {
+					// filters out elements that share a group with the current value
+					function filterGroup( val ) {
 
-					if ( ! (val.type) ) return false;
+						if ( ! (val.type) ) return false;
 
-					if ( val.type === value.type && val.name === value.name && val.name !== "" )
-						return true;
-				}
-				
-				// If the element is a part of a group, the group array will be filled with the whole lot of them.
-				var inpt,
-					group = x$.filter( lm, filterGroup );
+						if ( val.type === value.type && val.name === value.name && val.name !== "" )
+							return true;
+					}
+					
+					// If the element is a part of a group, the group array will be filled with the whole lot of them.
+					var inpt,
+						group = x$.filter( lm, filterGroup );
 
-				if ( group.length > 1 ) {
+					if ( group.length > 1 ) {
 
-					inpt = new x$.input( group );
-				} else {
+						inpt = new x$.input( group );
+					} else {
 
-					inpt = new x$.input( value );
-				}
+						inpt = new x$.input( value );
+					}
 
-				// Set values only for data fields with an actual value.  Prevents inadvertent overwriting.
-				if ( data[inpt.getDataBind()]  || data[inpt.getDataBind()] === "" ) {
+					// Set values only for data fields with an actual value.  Prevents inadvertent overwriting.
+					if ( data[inpt.getDataBind()]  || data[inpt.getDataBind()] === "" ) {
 
-					inpt.setValue( data[inpt.getDataBind()] );
-				}
+						inpt.setValue( data[inpt.getDataBind()] );
+					}
 
-				// If the element is part of a group, permit the rest of them to be looped over
-				if ( group.length > 1 )
-					return { "inc":group.length-1 };
-			} );
-		} else if ( lm ) {
+					// If the element is part of a group, permit the rest of them to be looped over
+					if ( group.length > 1 )
+						return { "inc":group.length-1 };
+				} );
+			} else if ( lm ) {
 
-			var inpt = new x$.input( lm );
+				var inpt = new x$.input( lm );
 
-			inpt.setValue( data[inpt.getDataBind()] );
+				inpt.setValue( data[inpt.getDataBind()] );
+			}
 		}
+
+		return node;
 	}
 
 	var e = function ( elem ) {
