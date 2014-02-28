@@ -80,8 +80,15 @@
 
 		function displayData( data, node ) {
 
-			if( node && node.cloneNode ) {
-				
+			if ( _node ) {
+
+				x$( _node ).remove( );
+
+				_node = null;
+			}
+
+			if ( node && node.cloneNode ) {
+
 				_node = node.cloneNode( true );
 				_node = x$.template.bindDataToNode( data, _node );
 
