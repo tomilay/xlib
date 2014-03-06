@@ -220,8 +220,10 @@ if (typeof Object.create !== 'function') {
 			// APPEND A NODE BEFORE THE UNDERLYING NODE FOR THIS OBJECT
 			// ************************************************************************
 			appendBefore: function (node) {
-				if(this.elem && this.elem.parentNode) {
-					this.elem.parentNode.insertBefore(node, this.elem);
+				if( node ) {
+					if(this.elem && this.elem.parentNode) {
+						this.elem.parentNode.insertBefore(node, this.elem);
+					}
 				}
 				return this;
 			},
@@ -230,8 +232,10 @@ if (typeof Object.create !== 'function') {
 			// APPEND A NODE AT THE BEGINNING OF THE UNDERLYING NODE FOR THIS OBJECT
 			// ************************************************************************
 			insertFirst: function (node) {
-				if(this.elem && this.elem !== node) {
-					this.elem.insertBefore(node, this.elem.firstChild);
+				if( node ) {
+					if(this.elem && this.elem !== node) {
+						this.elem.insertBefore(node, this.elem.firstChild);
+					}
 				}
 				return this;
 			},
@@ -240,8 +244,10 @@ if (typeof Object.create !== 'function') {
 			// APPEND A NODE AT THE END OF THE UNDERLYING NODE FOR THIS OBJECT
 			// ************************************************************************
 			insertLast: function (node){
-				if(this.elem && this.elem !== node) {
-					this.elem.appendChild(node);
+				if( node ) {
+					if(this.elem && this.elem !== node) {
+						this.elem.appendChild(node);
+					}
 				}
 				return this;
 			},
@@ -250,11 +256,13 @@ if (typeof Object.create !== 'function') {
 			// APPEND A NODE AFTER THE DOM ELEMENT THAT CONTAINS THIS OBJECT
 			// ************************************************************************
 			appendAfter: function (node){
-				if(this.elem && this.elem.parentNode){
-					if(this.elem.nextSibling) {
-						this.elem.parentNode.insertBefore(node, this.elem.nextSibling);
-					} else {
-						this.elem.parentNode.appendChild(node);
+				if( node ) {
+					if(this.elem && this.elem.parentNode){
+						if(this.elem.nextSibling) {
+							this.elem.parentNode.insertBefore(node, this.elem.nextSibling);
+						} else {
+							this.elem.parentNode.appendChild(node);
+						}
 					}
 				}
 				return this;
@@ -264,12 +272,14 @@ if (typeof Object.create !== 'function') {
 			// REMOVE THE NODE FROM THE UNDERLYING NODE THIS OBJECT
 			// ************************************************************************
 			removeNode: function(node) {
-				if(this.elem){
-					if(this.elem.removeNode){
-						this.elem.removeNode(true);
-					}
-					if(this.elem.removeChild){
-						this.elem.removeChild(node);
+				if( node ) {
+					if(this.elem){
+						if(node.removeNode){
+							node.removeNode(true);
+						} else
+						if(this.elem.removeChild){
+							this.elem.removeChild(node);
+						}
 					}
 				}
 				return this;
@@ -665,7 +675,7 @@ if (typeof Object.create !== 'function') {
 	// **********************************************************************************************
 	// A Ready function for DOMContentLoaded 
 	// **********************************************************************************************
-	x$.ready = function( fn ) {
+	x$.ready = function( fn, dc ) {
 		/*!
 		* Lifted from Diego Perini's contentloaded.js
 		*
@@ -677,7 +687,7 @@ if (typeof Object.create !== 'function') {
 
 			var done = false, top = true,
 
-			doc = win.document, root = doc.documentElement,
+			doc = dc || win.document, root = doc.documentElement,
 
 			add = doc.addEventListener ? 'addEventListener' : 'attachEvent',
 			rem = doc.addEventListener ? 'removeEventListener' : 'detachEvent',

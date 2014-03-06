@@ -6,7 +6,7 @@
 	<title>Fact Finder</title>
 	<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1" />
 	<meta http-equiv="Content-Language" content="en-us" />
-	<link href="css/factfinder.css" rel="stylesheet" type="text/css" />
+	<link href="../css/factfinder.css" rel="stylesheet" type="text/css" />
 	<script src="xlib/mdcore.js"></script>
 	<script src="xlib/mdinput.js"></script>
 	<script src="xlib/mdtemplate.js"></script>
@@ -16,11 +16,11 @@
 
 			var data = {
 					attributes:[
-						{ href: "javascript:;", hreftxt: "Population", criteria:"population" },
-						{ href: "javascript:;", hreftxt: "Age", criteria:"age" },
-						{ href: "javascript:;", hreftxt: "Business", criteria:"business" },
-						{ href: "javascript:;", hreftxt: "Education", criteria:"education" },
-						{ href: "javascript:;", hreftxt: "Housing", criteria:"housing" }
+						{ href: "javascript:;", hreftxt: "Population", attribute:"population" },
+						{ href: "javascript:;", hreftxt: "Age", attribute:"age" },
+						{ href: "javascript:;", hreftxt: "Business", attribute:"business" },
+						{ href: "javascript:;", hreftxt: "Education", attribute:"education" },
+						{ href: "javascript:;", hreftxt: "Housing", attribute:"housing" }
 						],
 					content:{					
 						field1:"field1 data", 
@@ -39,7 +39,7 @@
 
 			switch( attribute ) {
 
-				case "Population":
+				case "population":
 					node = x$(".templates .template2").getNode();
 					data = {
 						field1:"field1 data", 
@@ -47,7 +47,7 @@
 						field3:{selected:["1","2"], 0:'Volvo', 1:'Saab', 2:'Mercedes', 3:'Audi'}
 					};
 					break;
-				case "Education":
+				case "education":
 					node = x$(".templates .template1").getNode();
 					data = {
 						field1:"field1 data", 

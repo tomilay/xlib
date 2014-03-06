@@ -191,29 +191,59 @@
 	};	
 	
 	// ************************************************************************ 
+	// LOAD url USING AN IFRAME
+	// ************************************************************************ 		
+	o.iframeUrl = function( options ) { 
+
+		var cb = options.callback; //?options.callback:callbackError;
+		var ifrm = iFrame( );
+		
+		var callback = function ( ) {
+
+			var node = x$(options.url.selector, ifrm.contentDocument.body ).getNode( );
+
+			if ( cb ) {
+
+				cb( node );
+			}
+			x$( ifrm ).remove( );
+		};
+
+		x$.bind( ifrm, "load", callback );
+
+		if ( options.url ) {
+
+			ifrm.src = options.url.value;
+		}
+	};	
+
+	// ************************************************************************ 
 	// ADD A FILE INPUT TO A FORM FOR LATER UPLOAD
 	// ************************************************************************ 		
-	o.addFileToBatch = function(fileNode, options) { 
+	o.addFileToBatch = function ( fileNode, options ) { 
+
 		var body = doc.body;
 
 		//clone input file element
-		var clone = fileNode.cloneNode(true), form = null;
+		var clone = fileNode.cloneNode( true ), form = null;
 
-		// copy clone to the form to replace the old fileNode
-		x$(fileNode).appendBefore(clone);
+		// copy clone to the source form to replace the fileNode to move
+		x$( fileNode ).appendBefore( clone );
 
-		if (x$.find('> form#xsfiles', body).length == 0){
-			form = multipartForm(doc);
-			form.setAttribute("action", options.url);
-			form.setAttribute("id", "xsfiles");
-			form.setAttribute("display", "none");
-			x$(body).insertLast(form);
+		if ( x$.find('> form#xsfiles', body).length == 0 ) {
+
+			form = multipartForm( doc );
+			form.setAttribute( "action", options.url );
+			form.setAttribute( "id", "xsfiles" );
+			form.setAttribute( "display", "none" );
+			x$( body ).insertLast( form );
 		} else {
-			form = x$.find('> form#xsfiles', body)[0];
+
+			form = x$.find( '> form#xsfiles', body )[ 0 ];
 		}
 
 		// move input file element to the transport form
-		x$(form).insertLast(fileNode);
+		x$( form ).insertLast( fileNode );
 
 		return form;
 	};	

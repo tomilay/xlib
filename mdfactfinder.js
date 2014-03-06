@@ -7,20 +7,120 @@
 		e.returnValue = false;
 	}	
 
+	function searchArray( arr, field, key ) {
+
+	    for ( var i=0; i < arr.length; i++ ) {
+
+	        if ( arr[i][field] === key ) {
+
+	            return arr[ i ];
+	        }
+	    }
+	}				
+
 	// options e.g ( data:{})
 	var e = function ( elem, options ) {
 
-		var _nav = x$( ".factfinder-ul", elem ),
-			_content = x$( ".factfinder-content", elem ),
+		var _nav = x$( ".ff-ul", elem ),
+			_content = x$( ".ff-content", elem ),
 			_details = x$( ".content-details", _content.getNode() ),
 			_metadata = x$( ".metadata", _content.getNode() ),
 			_node = undefined,
 			_attrs =  options && options.data[ "attributes" ] || [ { href: "javascript:;", hreftxt: "default attribute", attribute:"none"} ],
-			_utmplt = new x$.template( x$(".factfinder-ul", elem).getNode() ),
+			_utmplt = new x$.template( x$(".ff-ul", elem).getNode() ),
+			// _entity should resolve to a primary key.  Nothing more complicated than that.
 			_entity = undefined,
-			_this = this;
+			_cache = { };
 
-		
+		function findFacts ( entity, obj ) {
+
+			// In practice: make a request for the data given by criteria for the given entity.
+			var tmplt = undefined,
+				data = undefined,
+				cbcomplete = false;
+
+			if ( obj.template.location === "local" ) {
+
+				gatherer( "template", obj.template.value );
+			} else {
+
+				if ( _cache[obj.template.value + obj.template.selector] ){
+					
+					gatherer( "template", _cache[obj.template.value + obj.template.selector] );					
+				} else {
+
+					x$.iframeUrl( {url:obj.template, callback:templateCallback} );
+				}
+			}
+
+			if( obj.datasource.location === "local" ) {
+
+				gatherer( "data", obj.datasource.value )
+			} else {
+
+				var entity = "?entity=" + entity;
+
+				// get the data from the remote source
+				x$.ajax(
+					{format:"JSON", method:"get", url:obj.datasource.value + entity, 
+					callback:dataCallBack
+					});
+
+			}
+
+			function gatherer( src, val ) {
+
+				if ( src === "data" ) {
+
+					data = val;
+				} else {
+
+					tmplt = val;
+				}
+
+				if ( _node ) {
+
+					x$( _node ).remove( );
+
+					_node = null;
+				}
+
+				if ( data && tmplt ) {
+
+					if ( tmplt && tmplt.cloneNode ) {
+
+						_node = tmplt.cloneNode( true );
+
+						// adding the node to the node container before binding allows us
+						// to cache  the node as a belonging to document instead of iframe
+						_details.insertLast( _node );
+
+						if ( obj.template.location === "remote" ) {
+
+							var id = obj.template.value + obj.template.selector;
+
+							if ( ! _cache[id] )
+								_cache[ id ] = _node.cloneNode( true );
+						}
+
+						_node = x$.template.bindDataToNode( data, _node );
+					}
+				}
+			}
+
+			function templateCallback( tmplt ) {
+
+				gatherer ( "template", tmplt );
+			}
+
+			function dataCallBack( o ) {
+
+				data = JSON.parse( o );
+				
+				gatherer( "data", data );
+			}
+		}
+
 		function searchEntity ( evt ) {
 
 			// Find the data
@@ -29,16 +129,11 @@
 			str = x$.input( x$("#searchbox", elem ).getNode() ).getValue( );
 
 			_entity = str;
-
-			alert( str );
 		}
 
-		function searchFact ( attribute ) {
+		function searchFact ( obj ) {
 
-			if ( options.factFinder ){
-
-				options.factFinder( _entity, attribute, displayData );
-			}
+			findFacts( _entity, obj, displayData );
 		}
 
 		function keyPress( evt ) {
@@ -74,22 +169,20 @@
 
 			if( node.tagName === "A" ) {
 
-				searchFact ( x$.input(node.childNodes[0]).getValue() );
+				var obj = searchArray( _attrs, "hreftxt", x$.input(node.childNodes[0]).getValue() );
+
+				if ( obj.attribute ) {
+
+					searchFact ( obj );
+				}
 			}
 		}
 
-		function displayData( data, node ) {
+		function displayData( data, tmplt ) {
 
-			if ( _node ) {
+			if ( tmplt && tmplt.cloneNode ) {
 
-				x$( _node ).remove( );
-
-				_node = null;
-			}
-
-			if ( node && node.cloneNode ) {
-
-				_node = node.cloneNode( true );
+				_node = tmplt.cloneNode( true );
 				_node = x$.template.bindDataToNode( data, _node );
 
 				// add the node to the node container
@@ -99,7 +192,7 @@
 
 		x$.bind( x$( "#searchanchor", elem ).getNode(), "click", searchEntity );
 		x$.bind( x$( "#searchbox", elem ).getNode(), "keypress", keyPress );
-		x$.bind( x$( ".factfinder-nav", elem ).getNode(), "click", navClick );
+		x$.bind( x$( ".ff-nav", elem ).getNode(), "click", navClick );
 
 		_utmplt.applyBindings( _attrs );
 
