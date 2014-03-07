@@ -18,6 +18,14 @@
 	    }
 	}				
 
+	function unselectAll( ) {
+
+		x$( ".ff-ul a" ).each( function( i, v ) {
+
+			x$( v ).removeClass( "selected" );
+		} );
+	}
+
 	// options e.g ( data:{})
 	var e = function ( elem, options ) {
 
@@ -30,13 +38,16 @@
 			_utmplt = new x$.template( x$(".ff-ul", elem).getNode() ),
 			// _entity should resolve to a primary key.  Nothing more complicated than that.
 			_entity = undefined,
-			_cache = { };
+			_cache = { },
+			_this = this,
+			_xEmpty = "x_empty",
+			_navLm = undefined;
 
 		function findFacts ( entity, obj ) {
 
 			// In practice: make a request for the data given by criteria for the given entity.
-			var tmplt = undefined,
-				data = undefined,
+			var tmplt = _xEmpty,
+				data = _xEmpty,
 				cbcomplete = false;
 
 			if ( obj.template.location === "local" ) {
@@ -85,7 +96,7 @@
 					_node = null;
 				}
 
-				if ( data && tmplt ) {
+				if ( data !== _xEmpty && tmplt !== _xEmpty ) {
 
 					if ( tmplt && tmplt.cloneNode ) {
 
@@ -105,12 +116,18 @@
 
 						_node = x$.template.bindDataToNode( data, _node );
 					}
+					
+					unselectAll( );
+
+					x$( _navLm ).addClass( "selected" );
 				}
 			}
 
 			function templateCallback( tmplt ) {
 
 				gatherer ( "template", tmplt );
+
+				x$.triggerHandler( _this, "templateCallback", true, tmplt );
 			}
 
 			function dataCallBack( o ) {
@@ -123,17 +140,42 @@
 
 		function searchEntity ( evt ) {
 
-			// Find the data
-			// Find the default node 
-			// Bind the default node to the data and display
+			// find the key for the search term.  
+			// the key is used in subsequent requests for attributes.
 			str = x$.input( x$("#searchbox", elem ).getNode() ).getValue( );
 
-			_entity = str;
+			if ( options.entFn ) {
+
+				options.entFn( str, setEntity );
+			}
+
 		}
 
-		function searchFact ( obj ) {
+		// the callback function that sets _entity to the returned key
+		function setEntity ( key ) {
 
-			findFacts( _entity, obj, displayData );
+			_entity = key;
+
+			selectInit( );
+		}
+
+		function searchFact (  ) {
+
+			var obj = searchArray( _attrs, "hreftxt", x$.input(_navLm.childNodes[0]).getValue() );
+
+			findFacts( _entity, obj );
+		}
+
+		function selectAttribute( a ) {
+
+			_navLm = a;
+
+			searchFact( );
+		}
+
+		function selectInit( ) {
+
+			selectAttribute( x$(".ff-ul:first-child a", elem).getNode() );
 		}
 
 		function keyPress( evt ) {
@@ -153,13 +195,12 @@
 					
 					break;
 			}
-
-			// 
 		}
 
 		function navClick( evt ) {
 
 			var node = evt.target ? evt.target : undefined;
+
 			node = node || ( evt.srcElement ? evt.srcElement : undefined );
 
 			while( node && node.parentNode && node.tagName !== "A" ) {
@@ -169,24 +210,9 @@
 
 			if( node.tagName === "A" ) {
 
-				var obj = searchArray( _attrs, "hreftxt", x$.input(node.childNodes[0]).getValue() );
+				_navLm = node;
 
-				if ( obj.attribute ) {
-
-					searchFact ( obj );
-				}
-			}
-		}
-
-		function displayData( data, tmplt ) {
-
-			if ( tmplt && tmplt.cloneNode ) {
-
-				_node = tmplt.cloneNode( true );
-				_node = x$.template.bindDataToNode( data, _node );
-
-				// add the node to the node container
-				_details.insertLast( _node );
+				searchFact( );
 			}
 		}
 
@@ -196,10 +222,12 @@
 
 		_utmplt.applyBindings( _attrs );
 
-		return {
-			displayData : displayData
-		}
+		selectInit( );
 
+		return {
+			selectAttribute:selectAttribute,
+			setEntity:setEntity
+		};
 	}
 
 	o.factFinder = o.factFinder || e;

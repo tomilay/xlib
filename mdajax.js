@@ -152,29 +152,33 @@
 	// ************************************************************************ 
 	// FUNCTION TO RETURN OR CREATE AN IFRAME FOR AJAX PURPPOSES
 	// ************************************************************************ 		
-	var iFrame = function () {
-		var elm = doc.getElementById("ajaxIFrame") || x$.createElement("iframe", doc);
-		if(!doc.getElementById("ajaxIFrame")){
-			var frag = doc.createDocumentFragment();
-			var div = doc.getElementById("ajaxDiv") || doc.createElement("div");
-			elm.setAttribute("name", "ajaxIFrame");
-			elm.setAttribute("id", "ajaxIFrame");
-			elm.style.display = 'none';
+	var iFrame = function ( ) {
+
+		var elm = x$.createElement("iframe", doc),
+			frag = doc.createDocumentFragment(),
+			div = doc.getElementById("ajaxDiv") || doc.createElement("div");
+
+		if ( ! doc.getElementById("ajaxDiv") )		
 			div.setAttribute("id", "ajaxDiv");
-			frag.appendChild(elm);
-			div.appendChild(frag);
-			doc.body.appendChild(div);
-			elm.contentDocument.write("<html><body></body></html>");
-		}
+
+		elm.style.display = 'none';
+
+		frag.appendChild(elm);
+		div.appendChild(frag);
+		doc.body.appendChild(div);
+		
+		elm.contentDocument.write("<html><body></body></html>");
+
 		return elm;
 	};
 	
 	// ************************************************************************ 
 	// POST FORM DATA USING AN IFRAME
 	// ************************************************************************ 		
-	o.ajaxIFrame = function(parent, options) { 
-		var cb = options.callback?options.callback:callbackError;
-		var ifrm = iFrame();
+	o.ajaxIFrame = function ( parent, options ) { 
+
+		var cb = options.callback?options.callback:callbackError,
+			ifrm = iFrame();
 		var callback = function() {
 			var xhr = ifrm.contentDocument.body.innerHTML;
 
@@ -195,8 +199,8 @@
 	// ************************************************************************ 		
 	o.iframeUrl = function( options ) { 
 
-		var cb = options.callback; //?options.callback:callbackError;
-		var ifrm = iFrame( );
+		var cb = options.callback,
+			ifrm = iFrame( );
 		
 		var callback = function ( ) {
 
@@ -206,6 +210,7 @@
 
 				cb( node );
 			}
+
 			x$( ifrm ).remove( );
 		};
 
