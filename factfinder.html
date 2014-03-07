@@ -7,76 +7,76 @@
 	<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1" />
 	<meta http-equiv="Content-Language" content="en-us" />
 	<link href="../css/factfinder.css" rel="stylesheet" type="text/css" />
-	<script src="xlib/mdcore.js"></script>
-	<script src="xlib/mdinput.js"></script>
-	<script src="xlib/mdtemplate.js"></script>
-	<script src="xlib/mdfactfinder.js"></script>
+	<script src="mdcore.js"></script>
+	<script src="mdcss.js"></script>
+	<script src="mdajax.js"></script>
+	<script src="mdinput.js"></script>
+	<script src="mdtemplate.js"></script>
+	<script src="mdfactfinder.js"></script>
 	<script>
 		function getInitData(  ) {
 
-			var data = {
-					attributes:[
-						{ href: "javascript:;", hreftxt: "Population", attribute:"population" },
-						{ href: "javascript:;", hreftxt: "Age", attribute:"age" },
-						{ href: "javascript:;", hreftxt: "Business", attribute:"business" },
-						{ href: "javascript:;", hreftxt: "Education", attribute:"education" },
-						{ href: "javascript:;", hreftxt: "Housing", attribute:"housing" }
-						],
-					content:{					
+			var popData = {
 						field1:"field1 data", 
 						field2:"field2 data", 
 						field3:{selected:["1","2"], 0:'Volvo', 1:'Saab', 2:'Mercedes', 3:'Audi'}
-						}
-				};
+					},
+				edData = {
+						field1:"field1 data", 
+						field2:"field2 data", 
+						field3:{selected:["1","2"], 0:'Volvo', 1:'Saab', 2:'Mercedes', 3:'Audi'}
+					};
+
+			var data = {
+					attributes:[
+						{ href: "javascript:;", hreftxt: "Population", attribute:"population", datasource:{location:"local",value:popData}, template:{location:"remote", value:"template.html", selector:".template2"} },
+						{ href: "javascript:;", hreftxt: "Age", attribute:"age", datasource:{location:"local",value:undefined}, template:{location:"remote", value:"template.html", selector:undefined} },
+						{ href: "javascript:;", hreftxt: "Business", attribute:"business", datasource:{location:"remote",value:"../../../plms/web/getlistings.php"}, template:{location:"remote", value:"template.html", selector:".content" } },
+						{ href: "javascript:;", hreftxt: "Education", attribute:"education", datasource:{location:"local",value:edData}, template:{location:"remote", value:"template.html", selector:".template1"} },
+						{ href: "javascript:;", hreftxt: "Housing", attribute:"housing", datasource:{location:"local",value:undefined}, template:{location:"remote", value:"template.html", selector:undefined } }
+						]
+					};
 
 			return data;
 		}
 
-		function findFacts ( entity, attribute, callback ) {
+		function getKey( ent, cb ) {
 
-			// In practice: make a request for the data given by criteria for the given entity.
-			var node, data;
+			var entity = ent;
 
-			switch( attribute ) {
-
-				case "population":
-					node = x$(".templates .template2").getNode();
-					data = {
-						field1:"field1 data", 
-						field2:"field2 data", 
-						field3:{selected:["1","2"], 0:'Volvo', 1:'Saab', 2:'Mercedes', 3:'Audi'}
-					};
-					break;
-				case "education":
-					node = x$(".templates .template1").getNode();
-					data = {
-						field1:"field1 data", 
-						field2:"field2 data", 
-						field3:{selected:["1","2"], 0:'Volvo', 1:'Saab', 2:'Mercedes', 3:'Audi'}
-					};
-					break;
-			}
-
-			callback( data, node );
+			cb( entity );
 		}
 
 		x$.ready( function() {
-				var ff = new x$.factFinder( x$("#city").getNode(), { data : getInitData() , factFinder:findFacts } );
-			}
+
+				var ff = new x$.factFinder( x$("#city").getNode(), { data : getInitData(), entFn:getKey } );
+
+				ff.setEntity( "voi" );
+
+			}, document
 		);
 	</script>
 </head></head>
 
 <body>
 
-<!-- START OF factfinder -->
-<div class="factfinder" id="city">
+<!-- START OF ff -->
+<div class="ff" id="city">
 
-	<!-- START OF factfinder-header DIV -->
+	<!-- START OF ff-header DIV -->
 
-	<div class="factfinder-header clearfix">
+	<div class="ff-header clearfix">
 
-		<div class="searcharea">
+		<div class="ff-logo">
+
+			<a href="factfinder.html"><img src="image_pres/Hotel1.gif"></img></a>
+		</div>
+		<div class="ff-summary">
+
+			<span>Fact Finder<span>
+			<p><em><span data-bind="subject"></span></em></p>
+		</div>
+		<div class="ff-search">
 
 			<h3>search</h3>
 
@@ -92,17 +92,17 @@
 
 	</div>
 
-	<!-- END OF factfinder-header DIV -->
+	<!-- END OF ff-header DIV -->
 
-	<!-- START OF factfinder-main DIV -->
+	<!-- START OF ff-main DIV -->
 
-	<div class="factfinder-main clearfix">
+	<div class="ff-main clearfix">
 		
-		<!-- START OF factfinder-nav div -->	
+		<!-- START OF ff-nav div -->	
 		
-		<div class="factfinder-nav">
+		<div class="ff-nav">
 
-			<ul class="factfinder-ul">
+			<ul class="ff-ul">
 
 				<li><a data-bind="href"><span data-bind="hreftxt"></span></a></li>
 
@@ -110,11 +110,11 @@
 
 		</div>
 
-		<!-- END OF factfinder-nav div -->
+		<!-- END OF ff-nav div -->
 
 		<!-- START OF content div -->
 
-		<div class="factfinder-content">
+		<div class="ff-content">
 
 			<div class="content-details">
 
@@ -124,51 +124,14 @@
 		<!-- END OF content div -->
 	
 	</div>
-	<!-- END OF factfinder-main DIV -->
+	<!-- END OF ff-main DIV -->
 
-	<!-- START OF factfinder-footer -->
-	<div class="factfinder-footer"><p>footer information</p></div>
-	<!-- END OF factfinder-footer -->
-
-</div>
-<!-- END OF factfinder -->
-<div class="templates">
-
-	<div class="template1">
-
-		<select data-bind="field3" multiple="multiple">
-		 	
-		 	<option value="1">Volvo</option>
-		  
-		  	<option value="2">Saab</option>
-		  
-		  	<option value="3">Mercedes</option>
-		  
-		  	<option value="4">Audi</option>
-
-		</select>
-
-		<select data-bind="field3">
-		</select>
-
-		<a data-bind="somelink">A test anchor</a>
-	</div>
-
-	<div class="template2">
-
-		<div>	
-			<select data-bind="field3"  multiple="multiple"></select>
-		</div>
-		<div>
-			<label id="labl" data-bind="field2"></label>
-		</div>
-		<div>
-			<input type="text" data-bind="field1"></input>
-		</div>
-	</div>
+	<!-- START OF ff-footer -->
+	<div class="ff-footer"><p>footer information</p></div>
+	<!-- END OF ff-footer -->
 
 </div>
-
+<!-- END OF ff -->
 </body>
 
 </html>

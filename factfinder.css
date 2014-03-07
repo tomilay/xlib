@@ -1,0 +1,158 @@
+	* {
+		margin:0;
+		padding:0;
+		border:0;
+	}
+
+	body {
+		font:1em verdana, arial, sans-serif; 
+		font-size:.8em;
+		color:#003366;
+	}
+	
+	.ff {
+		width:880px;
+		border:1px dotted silver;
+		margin-left:auto;
+		margin-right:auto;
+	}
+
+	.ff-content{
+		width:680px;
+		min-height:380px;
+		padding:10px;
+		background-color:rgb(139, 136, 130);
+		float:left;
+	}
+
+	.ff-content .content-details {
+		background-color:silver;
+		min-height:380px;
+	}
+
+	.ff-content .metadata {
+		background-color:silver;
+		min-height:100px;
+	}
+
+	.ff-footer{
+		border:1px dotted green;
+		padding:10px;
+	}
+
+	.ff-header{
+		/*border:1px dotted silver;*/
+	}
+
+	.ff-logo {
+		float:left;
+		height:24px;
+	}
+
+	.ff-logo a {
+		display:block;
+		padding:0 10px;
+	}
+
+	.ff-logo img {
+		height:80px;
+	}
+
+	.ff-main{
+		background-color: silver;
+	}
+
+	.ff-nav{
+		width:160px;
+		padding:10px;
+		float:left;
+	}
+
+	.ff-search {
+		width:350px;
+		padding:30px 0 30px 10px;
+		background-color:rgb(130, 136, 130);
+		float:right;
+	}
+
+	.ff-search a {
+		font-size:.75em;
+		font-weight:bold;
+		color:#546daf;
+		float:left;
+	}
+
+	.ff-search form {
+		float:left;
+	}
+
+	.ff-search form input {
+		border-top:2px solid #546daf;
+		border-right:2px solid #546daf;
+		border-left:2px solid #546daf;
+		border-bottom:2px solid #546daf;
+		font-size:.9em;
+		width:160px;
+		background-color:#e0e0e0;
+		margin-right:5px;
+		padding:3px;
+		float:left;
+	}
+
+	.ff-search h3 {
+		font-size:.8em;
+		color:#546daf;
+		float:left;
+		margin-right:5px;
+	}
+
+	.ff-summary span {
+		float:left;
+	}
+
+	.ff-ul>li>a {
+		display:block;
+	  	height:28px;
+	  	width:150px;
+		border: 1px solid #a8a8a6;
+		background:url(../image_pres/leftnav_btn.png) transparent no-repeat right 0;
+		color:#333;
+		font-weight:bold;
+		font-size:.90em;	
+		margin: 2px 0px 4px 2px;
+		padding:5px 0 0 12px;
+	}
+
+	.ff-ul>li>a:hover {
+		background-color:transparent;
+		background-position:right -48px;
+		text-decoration:none;	
+		color:#000;
+	}
+
+	.ff-ul>li>a.selected {
+		background-position:right -96px;
+		border-right: 1px solid #8b8882;
+		margin-right: 0;
+		color:#eee;
+		width:154px;
+	}
+	
+	.ff-ul>li>a.selected:hover {
+		color:#fff;
+	}	
+
+	.ff-nav ul li {
+		list-style-type:none;
+	}
+
+	li {
+		list-style-type:none;		
+	}
+	.clearfix:after {
+		content:".";
+		display:block;
+		height:0;
+		clear:both;
+		visibility:hidden;
+	}
