@@ -204,7 +204,7 @@
 		
 		var callback = function ( ) {
 
-			var node = x$(options.url.selector, ifrm.contentDocument.body ).getNode( );
+			var node = x$(options.selector, ifrm.contentDocument.body ).getNode( );
 
 			if ( cb ) {
 
@@ -218,7 +218,7 @@
 
 		if ( options.url ) {
 
-			ifrm.src = options.url.value;
+			ifrm.src = options.src;
 		}
 	};	
 

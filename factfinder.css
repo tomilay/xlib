@@ -18,7 +18,7 @@
 	}
 
 	.ff-content{
-		width:680px;
+		width:687px;
 		min-height:380px;
 		padding:10px;
 		background-color:rgb(139, 136, 130);
@@ -64,7 +64,7 @@
 
 	.ff-nav{
 		width:160px;
-		padding:10px;
+		padding:10px 10px 10px 3px;
 		float:left;
 	}
 
@@ -106,8 +106,12 @@
 		margin-right:5px;
 	}
 
-	.ff-summary span {
+	.ff-summary {
 		float:left;
+	}
+
+	.ff-summary em {
+		text-transform:capitalize;
 	}
 
 	.ff-ul>li>a {

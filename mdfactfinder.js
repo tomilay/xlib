@@ -42,7 +42,7 @@
 			_this = this,
 			_initialState = "initial_state",
 			_noInfoFound = "no_info_found",
-		// cache ids for missing data and templates
+			// cache ids for missing data and templates
 			_now = Date.now && Date.now() || function() { return +new Date; }(),
 		 	_mDataId = "md"+_now,
 			_mTmpId = "mt"+_now,
@@ -65,7 +65,7 @@
 					gatherer( "template", _cache[obj.template.value + obj.template.selector] );					
 				} else {
 
-					x$.iframeUrl( {url:obj.template, callback:templateCallback} );
+					x$.iframeUrl( {url:obj.template, selector:obj.template.selector, src:obj.template.value, callback:templateCallback} );
 				}
 			}
 
@@ -243,6 +243,36 @@
 			}
 		}
 
+		function missingTmplt( val ) {
+
+			var div = x$.createElement( "div", document ),
+				span = x$.createElement( "span", document ),
+				span1 = x$.createElement( "span", document );
+
+			span.setAttribute( "data-bind", "attribute" );
+			span1.innerHTML = "Oops, missing "+val+" for attribute ";
+			span1.appendChild( span );
+			div.appendChild( span1 );
+
+			return div;
+		}
+
+		function cacheDataTmp( t ) {
+
+			if ( t && t.cloneNode ) {
+
+				_cache[ _mDataId ] = t.cloneNode( true );
+			}
+		}
+
+		function cacheTemplateTmp( t ) {
+
+			if ( t && t.cloneNode ) {
+
+				_cache[ _mTmpId ] = t.cloneNode( true );
+			}
+		}
+
 		x$.bind( x$( "#searchanchor", _elem ).getNode(), "click", searchEntity );
 		x$.bind( x$( "#searchbox", _elem ).getNode(), "keypress", keyPress );
 		x$.bind( x$( ".ff-nav", _elem ).getNode(), "click", navClick );
@@ -251,8 +281,27 @@
 
 		selectInit( );
 		
-		_cache[ _mDataId ] = options.missData.value.cloneNode(true);
-		_cache[ _mTmpId ] = x$(".missing-template").getNode().cloneNode(true);
+		if ( ! (options.missData && options.missData.value) ) {
+
+			_cache[ _mDataId ] = missingTmplt( "data" );
+		} else if ( options.missData.location === "local" ) {
+			
+			_cache[ _mDataId ] = options.missData.value.cloneNode( true );
+		} else {
+
+			x$.iframeUrl( { callback:cacheDataTmp, url:options.missData, src:options.missData.value, selector:options.missData.selector } );
+		}
+
+		if ( ! (options.missTmplt && options.missTmplt.value) ) {
+
+			_cache[ _mTmpId ] = missingTmplt( "template" );
+		} else if ( options.missTmplt.location === "local" ){
+
+			_cache[ _mTmpId ] = options.missTmplt.value.cloneNode( true );
+		} else {
+
+			x$.iframeUrl( { callback:cacheTemplateTmp, url:options.missTmplt, src:options.missTmplt.value, selector:options.missTmplt.selector } );
+		}
 
 		return {
 			selectAttribute:selectAttribute,

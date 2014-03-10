@@ -6,7 +6,7 @@
 	<title>Fact Finder</title>
 	<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1" />
 	<meta http-equiv="Content-Language" content="en-us" />
-	<link href="../css/factfinder.css" rel="stylesheet" type="text/css" />
+	<link href="factfinder.css" rel="stylesheet" type="text/css" />
 	<script src="mdcore.js"></script>
 	<script src="mdcss.js"></script>
 	<script src="mdajax.js"></script>
@@ -32,7 +32,7 @@
 						{ href: "javascript:;", hreftxt: "Population", attribute:"population", datasource:{location:"local",value:popData}, template:{location:"remote", value:"template.html", selector:".template2"} },
 						{ href: "javascript:;", hreftxt: "Age", attribute:"age", datasource:{location:"local",value:undefined}, template:{location:"remote", value:"template.html", selector:undefined} },
 						{ href: "javascript:;", hreftxt: "Business", attribute:"business", datasource:{location:"remote",value:"../../../plms/web/getlistings.php"}, template:{location:"remote", value:"template.html", selector:".content" } },
-						{ href: "javascript:;", hreftxt: "Education", attribute:"education", datasource:{location:"local",value:edData}, template:{location:"remote", value:"template.html", selector:".template1"} },
+						{ href: "javascript:;", hreftxt: "Education", attribute:"education", datasource:{location:"local",value:edData}, template:{location:"remote", value:"template.html", selector:".template6"} },
 						{ href: "javascript:;", hreftxt: "Housing", attribute:"housing", datasource:{location:"local",value:undefined}, template:{location:"remote", value:"template.html", selector:undefined } }
 						]
 					};
@@ -49,9 +49,17 @@
 
 		x$.ready( function() {
 
-				var ff = new x$.factFinder( x$("#city").getNode(), { data : getInitData(), entFn:getKey } );
+				var ff = new x$.factFinder( 
+						{ 
+							node:x$("#city").getNode(), 
+							data : getInitData(), 
+							entFn:getKey, 
+							missData:{ location:"remote", value:"template.html", selector:".missing-data" } ,
+							missTmplt:{ location:"remote", value:"template.html", selector:".missing-template" }
+						} 
+					);
 
-				ff.setEntity( "voi" );
+				ff.setEntity( "mombasa" );
 
 			}, document
 		);
@@ -72,9 +80,9 @@
 			<a href="factfinder.html"><img src="image_pres/Hotel1.gif"></img></a>
 		</div>
 		<div class="ff-summary">
-
-			<span>Fact Finder<span>
-			<p><em><span data-bind="subject"></span></em></p>
+			
+			<span>Entity : <em><span data-bind="name"></span></em> </span>
+			
 		</div>
 		<div class="ff-search">
 
@@ -132,6 +140,15 @@
 
 </div>
 <!-- END OF ff -->
+
+<!-- <div class="missing-template">
+	<span>Oops! No template was found for the attribute <em><span data-bind="attribute"></span></em></span>
+</div>
+
+<div class="missing-data">
+	<span>No data was found for the attribute <em><span data-bind="attribute"></span></em></span>
+</div>
+ -->
 </body>
 
 </html>
