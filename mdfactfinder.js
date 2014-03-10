@@ -27,28 +27,33 @@
 	}
 
 	// options e.g ( data:{})
-	var e = function ( elem, options ) {
+	var e = function ( options ) {
 
-		var _nav = x$( ".ff-ul", elem ),
-			_content = x$( ".ff-content", elem ),
+		var _elem = options.node,
+			_nav = x$( ".ff-ul", _elem ),
+			_content = x$( ".ff-content", _elem ),
 			_details = x$( ".content-details", _content.getNode() ),
-			_metadata = x$( ".metadata", _content.getNode() ),
 			_node = undefined,
 			_attrs =  options && options.data[ "attributes" ] || [ { href: "javascript:;", hreftxt: "default attribute", attribute:"none"} ],
-			_utmplt = new x$.template( x$(".ff-ul", elem).getNode() ),
+			_utmplt = new x$.template( x$(".ff-ul", _elem).getNode() ),
 			// _entity should resolve to a primary key.  Nothing more complicated than that.
-			_entity = undefined,
+			_entity = { },
 			_cache = { },
 			_this = this,
-			_xEmpty = "x_empty",
+			_initialState = "initial_state",
+			_noInfoFound = "no_info_found",
+		// cache ids for missing data and templates
+			_now = Date.now && Date.now() || function() { return +new Date; }(),
+		 	_mDataId = "md"+_now,
+			_mTmpId = "mt"+_now,
 			_navLm = undefined;
 
 		function findFacts ( entity, obj ) {
 
 			// In practice: make a request for the data given by criteria for the given entity.
-			var tmplt = _xEmpty,
-				data = _xEmpty,
-				cbcomplete = false;
+			var tmplt = _initialState,
+				data = _initialState,
+				state = 0;
 
 			if ( obj.template.location === "local" ) {
 
@@ -69,7 +74,7 @@
 				gatherer( "data", obj.datasource.value )
 			} else {
 
-				var entity = "?entity=" + entity;
+				var entity = "?entity=" + entity[ "id" ];
 
 				// get the data from the remote source
 				x$.ajax(
@@ -83,10 +88,10 @@
 
 				if ( src === "data" ) {
 
-					data = val;
+					data = val || _noInfoFound;
 				} else {
 
-					tmplt = val;
+					tmplt = val || _noInfoFound;
 				}
 
 				if ( _node ) {
@@ -96,7 +101,19 @@
 					_node = null;
 				}
 
-				if ( data !== _xEmpty && tmplt !== _xEmpty ) {
+				if ( data === _noInfoFound && tmplt !== _initialState ) {
+
+					_node = _cache[ _mDataId ];
+					_details.insertLast( _node );
+					data = { attribute:obj.attribute };
+					_node = x$.template.bindDataToNode( data, _node );
+				} else if (  data !== _initialState && tmplt === _noInfoFound ) {
+
+					_node = _cache[ _mTmpId ];
+					_details.insertLast( _node );
+					data = { attribute:obj.attribute };
+					_node = x$.template.bindDataToNode( data, _node );
+				} else if ( data !== _initialState && tmplt !== _initialState ) {
 
 					if ( tmplt && tmplt.cloneNode ) {
 
@@ -116,18 +133,16 @@
 
 						_node = x$.template.bindDataToNode( data, _node );
 					}
-					
-					unselectAll( );
-
-					x$( _navLm ).addClass( "selected" );
 				}
+
+				unselectAll( );
+
+				x$( _navLm ).addClass( "selected" );
 			}
 
 			function templateCallback( tmplt ) {
 
 				gatherer ( "template", tmplt );
-
-				x$.triggerHandler( _this, "templateCallback", true, tmplt );
 			}
 
 			function dataCallBack( o ) {
@@ -140,21 +155,33 @@
 
 		function searchEntity ( evt ) {
 
+			str = x$.input( x$("#searchbox", _elem ).getNode() ).getValue( );
+
+			setEntity ( str );
+		}
+
+		function setEntity ( str ) {
+
 			// find the key for the search term.  
 			// the key is used in subsequent requests for attributes.
-			str = x$.input( x$("#searchbox", elem ).getNode() ).getValue( );
+			_entity[ "name" ] = str;
+
+			var node = x$( ".ff-summary" ).getNode( ),
+				tmplt = new x$.template( node ),
+				data = { name:_entity["name"] };
+
+				tmplt.applyBindings( data );
 
 			if ( options.entFn ) {
 
-				options.entFn( str, setEntity );
+				options.entFn( str, setKey );
 			}
-
 		}
 
 		// the callback function that sets _entity to the returned key
-		function setEntity ( key ) {
+		function setKey ( key ) {
 
-			_entity = key;
+			_entity[ "id" ] = key;
 
 			selectInit( );
 		}
@@ -175,7 +202,7 @@
 
 		function selectInit( ) {
 
-			selectAttribute( x$(".ff-ul:first-child a", elem).getNode() );
+			selectAttribute( x$(".ff-ul:first-child a", _elem).getNode() );
 		}
 
 		function keyPress( evt ) {
@@ -216,13 +243,16 @@
 			}
 		}
 
-		x$.bind( x$( "#searchanchor", elem ).getNode(), "click", searchEntity );
-		x$.bind( x$( "#searchbox", elem ).getNode(), "keypress", keyPress );
-		x$.bind( x$( ".ff-nav", elem ).getNode(), "click", navClick );
+		x$.bind( x$( "#searchanchor", _elem ).getNode(), "click", searchEntity );
+		x$.bind( x$( "#searchbox", _elem ).getNode(), "keypress", keyPress );
+		x$.bind( x$( ".ff-nav", _elem ).getNode(), "click", navClick );
 
 		_utmplt.applyBindings( _attrs );
 
 		selectInit( );
+		
+		_cache[ _mDataId ] = options.missData.value.cloneNode(true);
+		_cache[ _mTmpId ] = x$(".missing-template").getNode().cloneNode(true);
 
 		return {
 			selectAttribute:selectAttribute,
