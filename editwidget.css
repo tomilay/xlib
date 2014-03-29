@@ -1,0 +1,99 @@
+* {
+	margin:0;
+	padding:0;
+}
+
+body {
+	font:1em verdana, arial, sans-serif; 
+	color:#003366;
+}
+
+.editwidget {
+	width: 1000px;
+	min-height: 400px;
+}	
+
+.editwidget .footer, .editwidget .header {
+	height:48px;
+	padding:10px;
+	background-color:#CCFFCC;;
+}
+
+.editwidget .widgetwrap {
+}
+
+.editwidget .widgetwrap .editcomponent {
+	/*background-color:#CCFFFF;*/
+	float:left;
+	min-height:284px;
+	width:680px;
+	padding:10px 5px 10px;
+}
+
+.editwidget .widgetwrap .listcomponent {
+	/*background-color:#CCCC99;*/
+	float:left;
+	min-height:284px;
+	width:300px;
+	padding:10px 5px 10px;
+}
+
+.editwidget button {
+	width:70px;
+	height:30px;
+}
+	
+.editwidget div.submit.new {
+	margin:0 .5em 0 .5em;
+	float:right;
+	font-size: 1em;
+}
+
+.editwidget div.submit.edit {
+	display:none;
+}
+
+.editwidget div.update.new, div.remove.new, div.new_record.new {
+	display: none;
+}
+
+.editwidget div.update.edit, div.remove.edit, div.new_record.edit {
+	margin:0 .5em 0 .5em;
+	float:left;
+	font-size: 1em;
+}
+
+.editwidget form {
+	border-top:2px solid #ccc;
+	border-bottom:3px solid #ccc;
+}
+
+.editwidget div.clearfix {
+	border-top:1px solid #ccc;
+	padding:10px 0px;
+	position:relative;
+}
+
+.editwidget form label {
+	width:120px; 
+	float:left;
+	font-size:.75em;
+	margin:0 10px;
+}
+
+.editwidget form input[type="text"] {
+	text-align:left;
+	font-size: 1em;
+}
+.editwidget form textarea {
+	text-align:left;
+	font-size: 1em;
+}
+
+.clearfix:after {
+	content:".";
+	display:block;
+	height:0;
+	clear:both;
+	visibility:hidden;
+}

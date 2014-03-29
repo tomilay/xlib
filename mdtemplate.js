@@ -61,9 +61,24 @@
 					}
 
 					// Set values only for data fields with an actual value.  Prevents inadvertent overwriting.
-					if ( data[inpt.getDataBind()]  || data[inpt.getDataBind()] === "" ) {
+					if ( data[inpt.getDataBind()]  || data[inpt.getDataBind()] === "" || inpt.getDataNode() ) {
 
-						inpt.setValue( data[inpt.getDataBind()] );
+						if( inpt.getDataNode() ) { 
+							
+							if ( data[inpt.getDataNode()] ) {  // if the input is bound as a node
+							
+								var newNode = new x$.template( value );
+
+								newNode.applyBindings( data[inpt.getDataNode()] ); //bindDataToNode( data[ inpt.getDataNode() ], value.parentNode );
+							} else {
+
+								 // remove the node
+								 x$( value ).remove( );
+							}
+						} else {
+
+							inpt.setValue( data[inpt.getDataBind()] );
+						}
 					}
 
 					// If the element is part of a group, permit the rest of them to be looped over

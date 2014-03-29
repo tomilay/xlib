@@ -274,10 +274,23 @@
 			return elem.attributes["data-bind"] ? elem.attributes["data-bind"].value : undefined;
 		};
 
+		var getDataNode = function ( ) {
+
+			var elem;
+
+			if( x$.isArray(inpt) )
+				elem = inpt[0];
+			else
+				elem = inpt;
+
+			return elem.attributes["data-node"] ? elem.attributes["data-node"].value : undefined;
+		};
+
 		return {
 			getValue : getValue,
 			setValue : setValue,
-			getDataBind: getDataBind
+			getDataBind: getDataBind,
+			getDataNode: getDataNode
 		}
 	};
 

@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" lang="en" xml:lang="en">
+
+<head>
+	<title>Edit widget</title>
+	<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1" />
+	<meta http-equiv="Content-Language" content="en-us" />
+	<meta http-equiv="X-UA-Compatible" content="IE=8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link href="css/editwidget.css" rel="stylesheet" type="text/css" />
+	<link href="css/verticalmenubar_plain.css" rel="stylesheet" type="text/css" />
+	<script src="xlib/mdcore.js"></script>
+	<script src="xlib/mdcss.js"></script>
+	<script src="xlib/mdinput.js"></script>
+	<script src="xlib/mdtemplate.js"></script>
+	<script src="xlib/mditerator.js"></script>
+	<script src="xlib/mdajax.js"></script>
+<!--	<script>
+	<?php 
+	echo ("var property_dept_id=" . $_REQUEST["property_dept_id"]);
+	?>
+	</script>
+-->
+	<script>
+	var property_dept_id = 4;
+	</script>
+	<script src="xlib/editwidget.js"></script>
+
+<script>
+	var ew = undefined;
+
+	x$.ready( function() {
+		ew = new x$.editwidget( 
+					x$(".editwidget").getNode(),
+					{
+						key:"topic_id",
+						submiturl:"http://dev.morpheus.com/expotel/web/addtopic.php",
+						updateurl:"http://dev.morpheus.com/expotel/web/updatetopic.php",
+						removeurl:"http://dev.morpheus.com/expotel/web/deletetopic.php"
+					} 
+				);
+
+		ew.initializeList( {url:"http://dev.morpheus.com/expotel/web/gettopics.php?property_dept_id=" + property_dept_id} );
+		}, document);
+</script>
+</head>
+
+<body>
+
+<!-- START OF editwidget -->
+<div class="editwidget">
+
+	<!-- START OF header -->
+	<div class="header"><p>Use this form to edit/add topics</p></div>
+	<!-- END OF header -->
+
+	<!-- START OF content -->
+	<div class="widgetwrap clearfix">
+
+		<!-- START OF listcomponent -->
+		<div class="listcomponent">
+
+			<div id = "topic_list" class="listmenu">
+				<ul id="tul">
+					<li id="tli"><a data-bind="href"><span data-bind="topic_name"></span></a>
+					</li>
+				</ul>
+			</div>
+
+		</div>
+		<!-- END OF listcomponent -->
+
+		<!-- START OF editcomponent -->
+		<div class="editcomponent">
+
+			<form method="post">
+
+				<!--SINGLE LINE TEXT FIELD-->
+
+				<div class="clearfix">
+
+					<label>Enter the Topic Name</label>
+
+					<input id="topic_name" name="topic_name" data-bind="topic_name" type="text" sze="35"/>
+
+				</div>
+
+				<!--MULTI-LINE TEXT FIELD-->
+
+				<div class="clearfix">
+
+					<label>Enter the Topic Description</label>
+
+					<textarea name="topic_description" data-bind="topic_description" rows="6" cols="26"></textarea>
+
+				</div>
+
+				<!--SUBMIT BUTTON-->
+
+				<div class="clearfix">
+
+					<div class="new submit">
+
+						<button id="btn_submit">submit</button>
+
+					</div>
+
+					<div class="new update">
+
+						<button id="btn_update">update</button>
+
+					</div>
+
+					<div class="new remove">
+
+						<button id="btn_remove">remove</button>
+
+					</div>
+
+					<div class="new new_record">
+
+						<button id="btn_new">new</button>
+
+					</div>
+				</div>
+
+			</form>
+
+		</div>
+		<!-- END OF editcomponent -->
+	
+	</div>
+	<!-- END OF content -->
+
+	<!-- START OF footer -->
+	<div class="footer">&copy; 2014 Expotel Hospitality Services</div>
+	<!-- END OF footer -->
+
+</div>
+<!-- END OF datacapture -->
+
+</body>
+
+</html>

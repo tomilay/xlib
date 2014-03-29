@@ -7,33 +7,44 @@
 //************************************************************************ 		
 (function(o) {
 
-	var toggleMenu = function( evt ) {
-
-		var node = evt.target ? evt.target : undefined;
-			node = node || ( evt.srcElement ? evt.srcElement : undefined );
-
-		while ( node && node.parentNode && node.tagName !== "LI" ) {
-		
-			node = node.parentNode;
-		}
-
-		if ( x$( ">ul", node ).getNode( ) ) {
-
-			var ul = x$( ">ul", node );
-
-			if ( ! ul.hasClass("visib") ){
-
-				setTimeout( function() { ul.addClass("visib"); }, 100 );
-			} else {
-
-				setTimeout( function() { ul.removeClass("visib"); }, 100 );
-			}
-		}
-	}
-
 	var e = function ( elem ) {
 
 			var ul;
+
+			function toggleMenu( evt ) {
+
+				var node = evt.target ? evt.target : undefined;
+					node = node || ( evt.srcElement ? evt.srcElement : undefined );
+
+				while ( node && node.parentNode && node.tagName !== "LI" ) {
+				
+					node = node.parentNode;
+				}
+
+				if ( x$( ">ul", node ).getNode( ) ) {
+
+					var ul = x$( ">ul", node );
+
+					if ( ! ul.hasClass("visib") ){
+
+						setTimeout( function() { ul.addClass("visib"); }, 100 );
+					} else {
+
+						setTimeout( function() { ul.removeClass("visib"); }, 100 );
+					}
+				}
+				unselectAll( );
+
+				x$( node ).addClass( "selected" );
+			}
+
+			function unselectAll( ) {
+
+				x$( ">ul li", elem ).each( function( i, v ) {
+
+					x$( v ).removeClass( "selected" );
+				} );
+			}
 
 			if ( elem ) {
 

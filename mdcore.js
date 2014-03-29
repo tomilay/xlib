@@ -292,7 +292,7 @@ if (typeof Object.create !== 'function') {
 				if(this.elem){
 					if(this.elem.removeNode && this.elem.parentNode){
 						this.elem.removeNode(true);
-					}
+					} else
 					if(this.elem.removeChild && this.elem.parentNode){
 						this.elem.parentNode.removeChild(this.elem);
 					}
@@ -618,37 +618,11 @@ if (typeof Object.create !== 'function') {
 	};
 
 	// ************************************************************************
-	// ANIMATE FUNCTION - TAKES {delay, duration, delta, step} AS opts
-	// ************************************************************************
-	x$.animate = function ( opts ) {
-   
-  		var start = new Date ,
-  			id = setInterval( function() {
-
-    		var timePassed = new Date - start,
-    			progress = timePassed / opts.duration;
- 
-    		if ( progress > 1 ) progress = 1;
-     
-    		var delta = opts.delta( progress );
-			
-    		opts.step( delta );
-     
-    		if ( progress == 1 ) {
-
-      			clearInterval( id );
-    		}
-  		}, opts.delay || 10 );
-	};
-
-
-	// ************************************************************************
 	// FILTER FUNCTION - FILTER A CONTAINER(ARRAY...) ACCORDING TO A FUNCTION
 	// ************************************************************************
 	x$.filter = function ( obj, func ) {
 		// This function currently only works for arrays.  
-		var result = x$.isArray( obj ) ? obj.slice( 0 ):
-			x$.clone( obj ),
+		var result = x$.isArray( obj ) ? obj.slice( 0 ): x$.clone( obj ),
 			idx = 0;
 
 		x$.each( obj, function( iter, value ) {
@@ -670,6 +644,30 @@ if (typeof Object.create !== 'function') {
 		}, false );
 
 		return result;
+	};
+
+	// ************************************************************************
+	// ANIMATE FUNCTION - TAKES {delay, duration, delta, step} AS opts
+	// ************************************************************************
+	x$.animate = function ( opts ) {
+   
+  		var start = new Date ,
+  			id = setInterval( function() {
+
+    		var timePassed = new Date - start,
+    			progress = timePassed / opts.duration;
+ 
+    		if ( progress > 1 ) progress = 1;
+     
+    		var delta = opts.delta( progress );
+			
+    		opts.step( delta );
+     
+    		if ( progress == 1 ) {
+
+      			clearInterval( id );
+    		}
+  		}, opts.delay || 10 );
 	};
 
 	// **********************************************************************************************

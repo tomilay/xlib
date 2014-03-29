@@ -297,7 +297,7 @@
 			ajaxFormUrlEncoded(xhr, options.data);
 			break;
 		default:
-			ajaxJSON(xhr, options.data);
+			ajaxRAW(xhr, options.data);
 			break;
 		}
 	};

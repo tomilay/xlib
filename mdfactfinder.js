@@ -113,7 +113,7 @@
 					_details.insertLast( _node );
 					data = { attribute:obj.attribute };
 					_node = x$.template.bindDataToNode( data, _node );
-				} else if ( data !== _initialState && tmplt !== _initialState ) {
+				} else if ( (data !== _initialState || data === "none") && tmplt !== _initialState ) {
 
 					if ( tmplt && tmplt.cloneNode ) {
 
@@ -132,6 +132,8 @@
 						}
 
 						_node = x$.template.bindDataToNode( data, _node );
+
+						x$.triggerHandler( _this, "boundDataToNode", true, _node );
 					}
 				}
 
@@ -178,6 +180,13 @@
 			}
 		}
 
+		function init( ) {
+		
+			_this = this;
+
+			return this;
+		}
+		
 		// the callback function that sets _entity to the returned key
 		function setKey ( key ) {
 
@@ -305,7 +314,8 @@
 
 		return {
 			selectAttribute:selectAttribute,
-			setEntity:setEntity
+			setEntity:setEntity,
+			init:init
 		};
 	}
 
