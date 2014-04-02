@@ -3,9 +3,8 @@
 //	
 // 	Supported browsers: IE8, Chrome, FireFox, Safari, Opera
 // 
-// Dependency: mdcore.js, mdtemplates.js
+// Dependency: mdcore.js, mdtemplates.js, mdverticalbar.js
 //************************************************************************ 	
-var property_dept = { property_dept_id:property_dept_id };
 
 (function(o) {
 	
@@ -23,9 +22,9 @@ var property_dept = { property_dept_id:property_dept_id };
 		var 
 			_array = [ ],
 			_formSel = ".editcomponent>form";
-			_iterator = new x$.iterator( _array ),
 			_tmpData = undefined,
-			_frmData = undefined;
+			_frmData = undefined,
+			_vb = new x$.verticalBar( x$(".listmenu", elem).getNode() );
 
 			x$.bind( x$(".editcomponent", elem).getNode(), "click", userClick );
 		
@@ -39,7 +38,7 @@ var property_dept = { property_dept_id:property_dept_id };
 
 				case "btn_new":
 
-					newRecord( );
+					newRecord.call( this );
 
 					preventDefault( evt );
 
@@ -77,11 +76,20 @@ var property_dept = { property_dept_id:property_dept_id };
 			unsetState( "edit" );
 			setState( "new" );
 
+			_vb.unselectAll();
+			
+			x$.triggerHandler( this, "newRecord", true, {article_content:""} );
+			
 			return false;
 		};
 
 		function update ( ) {
 			
+			if( options.beforeUpdate ) {
+				
+				options.beforeUpdate( );
+			}
+
 			var form = x$( _formSel, elem ).getNode( );
 
 			_frmData = new x$.template( form ).getData( );
@@ -123,10 +131,15 @@ var property_dept = { property_dept_id:property_dept_id };
 
 		function submit ( ) {
 			
+			if( options.beforeSubmit ) {
+				
+				options.beforeSubmit( );
+			}
+			
 			var form = x$( _formSel, elem ).getNode( );
 			var data = new x$.template( form ).getData( );
 
-			data = x$.extend( data, property_dept );
+			data = x$.extend( data, key );
 
 			_tmpData = data;
 
@@ -148,12 +161,12 @@ var property_dept = { property_dept_id:property_dept_id };
 					format:"JSON", 
 					method:"get", 
 					url:options.url, 
-					callback:updateTopics
+					callback:updateList
 				} 
 			);
 		}
 
-		function updateTopics ( o ) {
+		function updateList ( o ) {
 
 			_array= JSON.parse(o);
 
@@ -192,10 +205,6 @@ var property_dept = { property_dept_id:property_dept_id };
 			}
 
 			updateDataList( );
-
-			// set the current widget state to edit mode
-			// unsetState( "new" );
-			// setState( "edit" );
 		}
 
 		function updateCallback ( o ) {
@@ -215,31 +224,29 @@ var property_dept = { property_dept_id:property_dept_id };
 
 			updateDataList( );
 
-			// set the current widget state to edit mode
-			unsetState( "new" );
-			setState( "edit" );
+			var form = x$( _formSel, elem ).getNode( );
+
+			form.reset( );
 		}
 
 		function updateDataList( ) {
 		    
 			var data = _array,
-	       		node = x$( "#tli" ).getNode( ),
+	       		node = x$( "#wul", elem ).getNode( ),
 	            nPar = undefined;
 	            
-	        if ( ! cache["tli"] ) {
+	        if ( ! cache["wli"] ) {
 	                
-	        	cache[ "tli" ] = node.cloneNode( true );
+	        	cache[ "wli" ] = node.firstChild.cloneNode( true );
 	        }
 	            
 	        if( node ) {
 	                
-	        	nPar = node.parentNode;
+	        	nPar = node; 
 	            
 	        	emptyList( nPar );
 
-	            node = null;
-	        
-	            node = cache[ "tli"].cloneNode( true );
+	            node = cache[ "wli"].cloneNode( true );
 	                
 	            x$( nPar ).insertLast( node );
 
@@ -247,27 +254,6 @@ var property_dept = { property_dept_id:property_dept_id };
 	        
 	            t.applyBindings( data );
 	        }
-		}
-
-		function findData( id ) {
-
-			var key = options.key;
-
-			function filter( val ) {
-
-				if ( val[key] == id ) {
-
-					return true;
-				}
-
-				return false;
-			}
-
-			var data = x$.filter( _array, filter );
-
-			data = data[0];
-
-			return data;
 		}
 
 		function getData( key, id ) {
@@ -292,6 +278,8 @@ var property_dept = { property_dept_id:property_dept_id };
 			// set the current widget state to edit mode
 			unsetState( "new" );
 			setState( "edit" );
+			
+			x$.triggerHandler( this, "getData", true, _tmpData );
 		}
 
 		function emptyList( l ) {
@@ -308,11 +296,50 @@ var property_dept = { property_dept_id:property_dept_id };
 				newRecord = x$( ".new_record", elem ),
 				update = x$( ".update", elem ),
 				remove = x$( ".remove", elem );
+			
+			if( x$.isArray(sbmt.getNode()) ) {
+				
+				sbmt.each( function(i,v) {
+					
+					x$(v).removeClass( state );
+				} );
+			} else {
+				
+				sbmt.removeClass( state );
+			}
 
-			sbmt.removeClass( state );
-			newRecord.removeClass( state );
-			update.removeClass( state );
-			remove.removeClass( state );
+			if( x$.isArray(newRecord.getNode()) ) {
+				
+				newRecord.each( function(i,v) {
+					
+					x$(v).removeClass( state );
+				} );
+			} else {
+				
+				newRecord.removeClass( state );
+			}
+
+			if( x$.isArray(update.getNode()) ) {
+				
+				update.each( function(i,v) {
+					
+					x$(v).removeClass( state );
+				} );
+			} else {
+				
+				update.removeClass( state );
+			}
+
+			if( x$.isArray(remove.getNode()) ) {
+				
+				remove.each( function(i,v) {
+					
+					x$(v).removeClass( state );
+				} );
+			} else {
+				
+				remove.removeClass( state );
+			}
 		}
 
 		function setState( state ) {
@@ -322,25 +349,48 @@ var property_dept = { property_dept_id:property_dept_id };
 				update = x$( ".update", elem ),
 				remove = x$( ".remove", elem );
 
-			sbmt.addClass( state );
-			newRecord.addClass( state );
-			update.addClass( state );
-			remove.addClass( state );
-		}
-
-		function updateControls( args ) {
-
-			var form = x$( _formSel, elem ).getNode();
-
-			if ( ! (args[1].data.getTotalRows() === 0) ) {
-
-				unsetState( "new" );
-				setState( "edit" );
+			if( x$.isArray(sbmt.getNode()) ) {
+				
+				sbmt.each( function(i,v) {
+					
+					x$(v).addClass( state );
+				} );
 			} else {
-				form.reset( );
+				
+				sbmt.addClass( state );
+			}
 
-				unsetState( "edit" );
-				setState( "new" );
+			if( x$.isArray(newRecord.getNode()) ) {
+				
+				newRecord.each( function(i,v) {
+					
+					x$(v).addClass( state );
+				} );
+			} else {
+				
+				newRecord.addClass( state );
+			}
+
+			if( x$.isArray(update.getNode()) ) {
+				
+				update.each( function(i,v) {
+					
+					x$(v).addClass( state );
+				} );
+			} else {
+				
+				update.addClass( state );
+			}
+
+			if( x$.isArray(remove.getNode()) ) {
+				
+				remove.each( function(i,v) {
+					
+					x$(v).addClass( state );
+				} );
+			} else {
+				
+				remove.addClass( state );
 			}
 		}
 
@@ -351,7 +401,7 @@ var property_dept = { property_dept_id:property_dept_id };
 			submit: submit,
 			initializeList: initializeList,
 			getData: getData
-		}
+		};
 	};
 
 	o.editwidget = o.editwidget || e;

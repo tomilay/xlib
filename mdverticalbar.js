@@ -39,11 +39,15 @@
 			}
 
 			function unselectAll( ) {
+				var node = x$( ">ul li", elem );
 
-				x$( ">ul li", elem ).each( function( i, v ) {
+				if( x$.isArray(node.getNode()) )
+					node.each( function( i, v ) {
 
-					x$( v ).removeClass( "selected" );
-				} );
+						x$( v ).removeClass( "selected" );
+					} );
+				else
+					node.removeClass( "selected" );
 			}
 
 			if ( elem ) {
@@ -56,7 +60,9 @@
 				x$.bind( ul.getNode( ) , "click", toggleMenu );
 			}
 
-			return { };
+			return { 
+				unselectAll: unselectAll
+			};
 	};
 
 	o.verticalBar = o.verticalBar || e;

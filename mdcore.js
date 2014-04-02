@@ -622,7 +622,8 @@ if (typeof Object.create !== 'function') {
 	// ************************************************************************
 	x$.filter = function ( obj, func ) {
 		// This function currently only works for arrays.  
-		var result = x$.isArray( obj ) ? obj.slice( 0 ): x$.clone( obj ),
+		var result = x$.isArray( obj ) ? obj.slice( 0 ):
+			x$.clone( obj ),
 			idx = 0;
 
 		x$.each( obj, function( iter, value ) {
