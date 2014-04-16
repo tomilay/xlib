@@ -161,7 +161,7 @@
 					format:"JSON", 
 					method:"get", 
 					url:options.url, 
-					callback:updateList
+					callback:options.callback ? options.callback : updateList
 				} 
 			);
 		}
@@ -400,6 +400,7 @@
 			remove: remove,
 			submit: submit,
 			initializeList: initializeList,
+			updateList: updateList,
 			getData: getData
 		};
 	};

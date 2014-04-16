@@ -233,6 +233,11 @@
 					if ( group.length > 1 )
 						return { "inc":group.length-1 };
 				} );
+			} else if ( lm ) {
+
+				var inpt = new x$.input( lm );
+
+				data[ inpt.getDataBind() ] = inpt.getValue( );
 			}
 			return data;
 		};

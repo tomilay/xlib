@@ -88,14 +88,67 @@
 			stopBubble( evt );
 		}
 
-		x$.bind( _cp.getNode() , "click", movePointer );
-		x$.bind( _cn.getNode() , "click", movePointer );
-		x$.bind( _cf.getNode() , "click", movePointer );
-		x$.bind( _cl.getNode() , "click", movePointer );
+		function first( ) {
+
+			_data.first( _size );
+
+			updateDisplay( );
+		}
+
+		function last( ) {
+
+			_data.last( _size );
+
+			updateDisplay( );
+		}
+
+		function next( ) {
+
+			_data.next( _size );
+
+			updateDisplay( );
+		}
+
+		function previous( ) {
+
+			_data.previous( _size );
+
+			updateDisplay( );
+		}
+
+		function gotoPage( pg ) {
+
+			_data.gotoPage( pg );
+
+			updateDisplay( );
+		}
+
+		if( _cp.getNode() ) {
+			
+			x$.bind( _cp.getNode() , "click", movePointer );
+		}
+
+		if( _cn.getNode() ) {
+			
+			x$.bind( _cn.getNode() , "click", movePointer );
+		}
+
+		if( _cf.getNode() ) {
+			
+			x$.bind( _cf.getNode() , "click", movePointer );
+		}
+
+		if( _cl.getNode() ) {
+			
+			x$.bind( _cl.getNode() , "click", movePointer );
+		}
 
 		return {
-			getIterator: getIterator,
-			updateDisplay: updateDisplay
+			first: first,
+			last:last,
+			next: next,
+			previous: previous,
+			gotoPage: gotoPage
 		}
 	};
 

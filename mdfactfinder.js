@@ -1,3 +1,6 @@
+/*
+dependencies:mdcore.js, mdinput.js, mdtemplate.js
+*/
 ( function ( o ) {
 
 	function preventDefault ( e ) {
@@ -18,12 +21,12 @@
 	    }
 	}				
 
-	function unselectAll( ) {
+	function emptyNode( n ) {
+		
+		while ( n.firstChild ) {
 
-		x$( ".ff-ul a" ).each( function( i, v ) {
-
-			x$( v ).removeClass( "selected" );
-		} );
+			n.removeChild( n.firstChild );
+		}
 	}
 
 	// options e.g ( data:{})
@@ -41,57 +44,84 @@
 			_cache = { },
 			_this = this,
 			_initialState = "initial_state",
-			_noInfoFound = "no_info_found",
 			// cache ids for missing data and templates
 			_now = Date.now && Date.now() || function() { return +new Date; }(),
 		 	_mDataId = "md"+_now,
 			_mTmpId = "mt"+_now,
 			_navLm = undefined;
 
+		function unselectAll( ) {
+
+			var node = x$( ".ff-ul a", _elem );
+
+			if( x$.isArray(node.getNode()) )
+				node.each( function( i, v ) {
+
+						x$( v ).removeClass( "selected" );
+				} );
+			else
+				node.removeClass( "selected" );
+		}
+
 		function findFacts ( entity, obj ) {
 
 			// In practice: make a request for the data given by criteria for the given entity.
 			var tmplt = _initialState,
 				data = _initialState,
-				state = 0;
+				ent = entity;
 
-			if ( obj.template.location === "local" ) {
+			if( ! obj )
+				return;
 
-				gatherer( "template", obj.template.value );
-			} else {
+			getTemplate();
 
-				if ( _cache[obj.template.value + obj.template.selector] ){
-					
-					gatherer( "template", _cache[obj.template.value + obj.template.selector] );					
+			function getData() {
+
+				if( obj.datasource.location === "local" ) {
+
+					gatherer( "data", obj.datasource.value );
 				} else {
 
-					x$.iframeUrl( {url:obj.template, selector:obj.template.selector, src:obj.template.value, callback:templateCallback} );
+					ent = "?entity=" + ent[ "id" ];
+
+					// get the data from the remote source
+					x$.ajax(
+						{format:"JSON", method:"get", url:obj.datasource.value + ent, 
+						callback:dataCallBack
+						});
+
 				}
 			}
 
-			if( obj.datasource.location === "local" ) {
+			function getTemplate() {
 
-				gatherer( "data", obj.datasource.value )
-			} else {
+				if ( obj.template.location === "local" ) {
 
-				var entity = "?entity=" + entity[ "id" ];
+					gatherer( "template", obj.template.value );
 
-				// get the data from the remote source
-				x$.ajax(
-					{format:"JSON", method:"get", url:obj.datasource.value + entity, 
-					callback:dataCallBack
-					});
+					getData();
+				} else {
 
+					if ( _cache[obj.template.value + obj.template.selector] ){
+						
+						gatherer( "template", _cache[obj.template.value + obj.template.selector] );	
+
+						getData();				
+					} else {
+
+						x$.iframeUrl( {url:obj.template, selector:obj.template.selector, src:obj.template.value, callback:templateCallback} );
+					}
+				}
 			}
 
 			function gatherer( src, val ) {
 
 				if ( src === "data" ) {
 
-					data = val || _noInfoFound;
+					data = val || {}; 
 				} else {
 
-					tmplt = val || _noInfoFound;
+					tmplt = val || x$.createElement( "div", document );
 				}
 
 				if ( _node ) {
@@ -101,19 +131,7 @@
 					_node = null;
 				}
 
-				if ( data === _noInfoFound && tmplt !== _initialState ) {
-
-					_node = _cache[ _mDataId ];
-					_details.insertLast( _node );
-					data = { attribute:obj.attribute };
-					_node = x$.template.bindDataToNode( data, _node );
-				} else if (  data !== _initialState && tmplt === _noInfoFound ) {
-
-					_node = _cache[ _mTmpId ];
-					_details.insertLast( _node );
-					data = { attribute:obj.attribute };
-					_node = x$.template.bindDataToNode( data, _node );
-				} else if ( (data !== _initialState || data === "none") && tmplt !== _initialState ) {
+				if ( data !== _initialState && tmplt !== _initialState ) {
 
 					if ( tmplt && tmplt.cloneNode ) {
 
@@ -121,6 +139,8 @@
 
 						// adding the node to the node container before binding allows us
 						// to cache  the node as a belonging to document instead of iframe
+						emptyNode( _details.getNode() );
+
 						_details.insertLast( _node );
 
 						if ( obj.template.location === "remote" ) {
@@ -131,7 +151,8 @@
 								_cache[ id ] = _node.cloneNode( true );
 						}
 
-						_node = x$.template.bindDataToNode( data, _node );
+						var  tm = new x$.template( _node );
+						tm.applyBindings( data );
 
 						x$.triggerHandler( _this, "boundDataToNode", true, _node );
 					}
@@ -145,13 +166,23 @@
 			function templateCallback( tmplt ) {
 
 				gatherer ( "template", tmplt );
+
+				getData();
 			}
 
 			function dataCallBack( o ) {
 
-				data = JSON.parse( o );
-				
-				gatherer( "data", data );
+				var data;
+
+				try{
+					
+					data = JSON.parse( o );
+				} catch ( e ) {
+
+					data = {};
+				}
+
+				gatherer( "data",  data );
 			}
 		}
 
@@ -266,51 +297,11 @@
 			return div;
 		}
 
-		function cacheDataTmp( t ) {
-
-			if ( t && t.cloneNode ) {
-
-				_cache[ _mDataId ] = t.cloneNode( true );
-			}
-		}
-
-		function cacheTemplateTmp( t ) {
-
-			if ( t && t.cloneNode ) {
-
-				_cache[ _mTmpId ] = t.cloneNode( true );
-			}
-		}
-
-		x$.bind( x$( "#searchanchor", _elem ).getNode(), "click", searchEntity );
-		x$.bind( x$( "#searchbox", _elem ).getNode(), "keypress", keyPress );
 		x$.bind( x$( ".ff-nav", _elem ).getNode(), "click", navClick );
 
 		_utmplt.applyBindings( _attrs );
 
 		selectInit( );
-		
-		if ( ! (options.missData && options.missData.value) ) {
-
-			_cache[ _mDataId ] = missingTmplt( "data" );
-		} else if ( options.missData.location === "local" ) {
-			
-			_cache[ _mDataId ] = options.missData.value.cloneNode( true );
-		} else {
-
-			x$.iframeUrl( { callback:cacheDataTmp, url:options.missData, src:options.missData.value, selector:options.missData.selector } );
-		}
-
-		if ( ! (options.missTmplt && options.missTmplt.value) ) {
-
-			_cache[ _mTmpId ] = missingTmplt( "template" );
-		} else if ( options.missTmplt.location === "local" ){
-
-			_cache[ _mTmpId ] = options.missTmplt.value.cloneNode( true );
-		} else {
-
-			x$.iframeUrl( { callback:cacheTemplateTmp, url:options.missTmplt, src:options.missTmplt.value, selector:options.missTmplt.selector } );
-		}
 
 		return {
 			selectAttribute:selectAttribute,
