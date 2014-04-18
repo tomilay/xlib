@@ -20,7 +20,7 @@
 	var e = function( elem, options ) {
 
 		var 
-			_data = {},
+			_data = {}, // the blog and list of all comments
 			_formSel = ".editcomponent>form";
 			_tmpData = undefined,
 			_vb = new x$.verticalBar( x$(".listmenu", elem).getNode() )
@@ -32,10 +32,16 @@
 			x$( "#tmpltEditComment", elem ).remove( );
 
 			x$.bind( x$(".editcomponent", elem).getNode(), "click", userClick );
+			x$.bind( x$(".editcomponent", elem).getNode(), "focus", focusComment );
+
+		function focusComment( evt ) {
+
+			removeEditCommentNodes( );
+		}
 
 		function userClick( evt ) {
 
-			id = evt.target ? evt.target.id : undefined;
+			var id = evt.target ? evt.target.id : undefined;
 
 			id = id || ( evt.srcElement ? evt.srcElement.id : undefined );
 
@@ -43,7 +49,7 @@
 
 				case "btn_submit":
 
-					submit( );
+					submitComment( );
 
 					preventDefault( evt );
 
@@ -54,7 +60,9 @@
 		function removeComment ( id ) {
 
 			var data = { blog_comment_id:id }; 
-			
+						
+			removeEditCommentNodes( );
+
 			_tmpData = _boxes[ id ].getData()[ "blog_comment" ];
 
 			x$.ajax( 
@@ -70,9 +78,44 @@
 
 		function updateComment( evt ) {
 
-			// var tmpltNode = x$( "#tmpltEditComment" ).getNode( );
-			
-			alert("Inside updateComment");
+			var id = evt.target ? evt.target.id : undefined;
+
+			id = id || ( evt.srcElement ? evt.srcElement.id : undefined );
+
+			var node = x$( "#tmpltEditComment", _boxes[_tmpData["blog_comment_id"]].getData()["node"] ).getNode( );
+
+			switch( id ) {
+
+				case "btn_cancel":
+
+					if ( node ) {
+
+						x$.unbindHandler( node, "click", updateComment );
+					
+						x$( node ).remove( );
+					}
+
+					break;
+
+				case "btn_submit":
+
+					var form = x$( _formSel, _boxes[_tmpData["blog_comment_id"]].getData()["node"] ).getNode( ),
+						data = new x$.template( form ).getData( ),
+						bcid = _boxes[ _tmpData["blog_comment_id"] ].getData( )[ "blog_comment" ]["blog_comment_id"];
+
+					data = x$.extend( data, {blog_comment_id:bcid} );
+
+					x$.ajax( 
+						{
+							format:"FormUrlEncoded", 
+							method:"post", 
+							url:options.updateurl,
+							data:data,
+							callback:updateCallback
+						} );
+
+					break;
+			}
 
 			preventDefault( evt );
 		}
@@ -83,40 +126,9 @@
 				tmpltNode = _cache[ "editcommmentnode" ].cloneNode(true); 
 
 			node = x$( "#edit", node ).getNode( );
-			var child = x$( "#tmpltEditComment", node ).getNode( );
 
-			if ( child )
-				x$.unbindHandler( child, "click", updateComment );
+			removeEditCommentNodes();
 
-			emptyNode( node );
-
-			// var nodes = x$( "#edit", elem ).getNode( );
-
-			// if ( nodes ) {
-			// 	if( x$.isArray( nodes )) {
-					
-			// 		x$( nodes ).each( function ( i, v ) {
-
-			// 			var child = x$( "#tmpltEditComment", v ).getNode( );
-
-			// 			if ( child )
-			// 				x$.unbindHandler( child, "click", updateComment );
-
-			// 			emptyNode( v );
-
-			// 			// alert(v);
-			// 		} );
-			// 	}
-			// 	else {
-
-			// 		var child = x$( "#tmpltEditComment", nodes ).getNode( );
-
-			// 		if ( child )
-			// 			x$.unbindHandler( child, "click", updateComment );
-
-			// 		emptyNode( nodes );
-			// 	}
-			// }
 			node.appendChild( tmpltNode );
 
 			var tmplt = new x$.template( tmpltNode );
@@ -125,20 +137,23 @@
 
 			function bindHandler ( args ) { 
 
-				x$.unbindHandler( x$("#btn_submit", args[1]).getNode(), "click", updateComment );
-				x$.bind( x$("#btn_submit", args[1]).getNode(), "click", updateComment );
+				x$.unbindHandler( args[1], "click", updateComment );
+				x$.bind( args[1], "click", updateComment );
 			}
+
 			_tmpData = _boxes[ id ].getData( )[ "blog_comment" ];
 
 			tmplt.applyBindings( _tmpData );
 		};
 
-		function submit ( ) {
+		function submitComment ( ) {
 			
 			if( options.beforeSubmit ) {
 				
 				options.beforeSubmit( );
 			}
+
+			removeEditCommentNodes( );
 			
 			var form = x$( _formSel, elem ).getNode( );
 			var data = new x$.template( form ).getData( );
@@ -180,7 +195,8 @@
 
 		function removeCallback ( o ) {
 
-			var data = _data[ "comments" ];
+			var data = _data[ "comments" ],
+				node = x$( "#tmpltEditComment", _boxes[_tmpData["blog_comment_id"]].getData()["node"] ).getNode( );
 
 			for( var i = 0; i < data.length; i++ ) {
 
@@ -192,13 +208,51 @@
 				}
 			}
 
+			if( node ) {
+
+				x$.unbindHandler( node, "click", updateComment );
+				x$( node ).remove( );
+			}
+
 			updateCommentList( );
+		}
+
+		function updateCallback ( o ) {
+			
+			var ra = JSON.parse(o);
+
+			var form = x$( _formSel, _boxes[_tmpData["blog_comment_id"]].getData()["node"] ).getNode( ),
+						data = new x$.template( form ).getData( ),
+						node = x$( "#tmpltEditComment", _boxes[_tmpData["blog_comment_id"]].getData()["node"] ).getNode( );	
+
+			if( ra[0]["rows_affected"] == 1 ) {
+			
+				_tmpData[ "blog_comment_content" ] = data[ "blog_comment_content" ];
+			}
+
+			if( node ) {
+
+				x$.unbindHandler( node, "click", updateComment );
+				x$( node ).remove( );
+			}
+
+			updateCommentList( );
+
+			var form = x$( _formSel, elem ).getNode( );
+
+			form.reset( );
 		}
 
 		function submitCallback ( o ) {
 			// var data = x$.extend{ {user_id:key["user_id"]}, JSON.parse(o) };
-			
-			_data.comments[ _data.comments.length ] = x$.extend(_tmpData, JSON.parse(o) );
+			var deLink = {
+				delete_link:"javascript:bvw.removeComment("+ JSON.parse(o)["blog_comment_id"] +")",
+				edit_link:"javascript:bvw.editComment("+ JSON.parse(o)["blog_comment_id"] +")"
+			};
+			_tmpData = x$.extend(_tmpData, JSON.parse(o) );
+			_tmpData = x$.extend(_tmpData, deLink );
+			_data.comments[ _data.comments.length ] = x$.extend(_tmpData, deLink );
+			// _data.comments[ _data.comments.length ] = x$.extend(_tmpData, JSON.parse(o) );
 
 			updateCommentList( );
 
@@ -254,6 +308,36 @@
 	        
 	            _boxes = t.applyBindings( data );
 	        }
+		}
+
+		function removeEditCommentNodes( ) {
+
+			var nodes = x$( "#edit", elem ).getNode( );
+
+			// remove all existing edit comment nodes
+			if ( nodes ) {
+				if( x$.isArray( nodes )) {
+					
+					x$( nodes ).each( function ( i, v ) {
+
+						var child = x$( "#tmpltEditComment", v ).getNode( );
+
+						if ( child )
+							x$.unbindHandler( child, "click", updateComment );
+
+						emptyNode( v );
+					} );
+				}
+				else {
+
+					var child = x$( "#tmpltEditComment", nodes ).getNode( );
+
+					if ( child )
+						x$.unbindHandler( child, "click", updateComment );
+
+					emptyNode( nodes );
+				}
+			}
 		}
 
 		function emptyNode( l ) {
