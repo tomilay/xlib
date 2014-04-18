@@ -12,12 +12,14 @@
 
 	var e = function( o, options ) {
 
-		var _elem = o;
+		var _data = { };
+
+		_data[ "node" ] = o;
 
 		function getData( ) {
 
 			if ( options.getData ) 
-				return options.getData( _elem );
+				return options.getData( _data );
 
 			return "n/a";
 		}
@@ -25,7 +27,7 @@
 		function setData( v ) {
 
 			if( options.setData )
-				options.setData( _elem, v );
+				options.setData( _data, v );
 
 			return this;
 		}
@@ -37,7 +39,7 @@
 
 		function getElem(  ) {
 
-			return _elem;
+			return _data[ "node" ];
 		}
 
 		return {

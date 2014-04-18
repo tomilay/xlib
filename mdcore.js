@@ -559,9 +559,10 @@ if (typeof Object.create !== 'function') {
 	// CLONE OBJECT USING QUICK AND DIRTY JSON.parse AND JSON.stringify
 	// ************************************************************************
 	x$.clone = function ( o ) {
+
 		return JSON.parse( JSON.stringify(o) );
 	};
-	
+
 	// ************************************************************************
 	// EXPOSE THE f$.prototype TO FACILITATE EXTENSIBILITY
 	// ************************************************************************

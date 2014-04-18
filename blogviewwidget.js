@@ -23,10 +23,16 @@
 			_data = {},
 			_formSel = ".editcomponent>form";
 			_tmpData = undefined,
-			_vb = new x$.verticalBar( x$(".listmenu", elem).getNode() );
+			_vb = new x$.verticalBar( x$(".listmenu", elem).getNode() )
+			_boxes = undefined,
+			_cache = { };
+
+			_cache[ "editcommmentnode" ] = x$( "#tmpltEditComment", elem ).getNode( ).cloneNode( true );
+
+			x$( "#tmpltEditComment", elem ).remove( );
 
 			x$.bind( x$(".editcomponent", elem).getNode(), "click", userClick );
-		
+
 		function userClick( evt ) {
 
 			id = evt.target ? evt.target.id : undefined;
@@ -49,7 +55,7 @@
 
 			var data = { blog_comment_id:id }; 
 			
-			_tmpData = getComment( "blog_comment_id", id );
+			_tmpData = _boxes[ id ].getData()[ "blog_comment" ];
 
 			x$.ajax( 
 				{
@@ -62,14 +68,67 @@
 			);
 		};
 
+		function updateComment( evt ) {
+
+			// var tmpltNode = x$( "#tmpltEditComment" ).getNode( );
+			
+			alert("Inside updateComment");
+
+			preventDefault( evt );
+		}
 
 		function editComment ( id ) {
 
-			// var data = { blog_comment_id:id }; 
-			
-			_tmpData = getComment( "blog_comment_id", id );
+			var node = _boxes[ id ].getData( )[ "node" ],
+				tmpltNode = _cache[ "editcommmentnode" ].cloneNode(true); 
 
-			var tmplt = new x$.template( x$("#tmpltEditComment").getNode( ) );
+			node = x$( "#edit", node ).getNode( );
+			var child = x$( "#tmpltEditComment", node ).getNode( );
+
+			if ( child )
+				x$.unbindHandler( child, "click", updateComment );
+
+			emptyNode( node );
+
+			// var nodes = x$( "#edit", elem ).getNode( );
+
+			// if ( nodes ) {
+			// 	if( x$.isArray( nodes )) {
+					
+			// 		x$( nodes ).each( function ( i, v ) {
+
+			// 			var child = x$( "#tmpltEditComment", v ).getNode( );
+
+			// 			if ( child )
+			// 				x$.unbindHandler( child, "click", updateComment );
+
+			// 			emptyNode( v );
+
+			// 			// alert(v);
+			// 		} );
+			// 	}
+			// 	else {
+
+			// 		var child = x$( "#tmpltEditComment", nodes ).getNode( );
+
+			// 		if ( child )
+			// 			x$.unbindHandler( child, "click", updateComment );
+
+			// 		emptyNode( nodes );
+			// 	}
+			// }
+			node.appendChild( tmpltNode );
+
+			var tmplt = new x$.template( tmpltNode );
+
+			x$.bind( tmplt, "bindSingle", bindHandler);
+
+			function bindHandler ( args ) { 
+
+				x$.unbindHandler( x$("#btn_submit", args[1]).getNode(), "click", updateComment );
+				x$.bind( x$("#btn_submit", args[1]).getNode(), "click", updateComment );
+			}
+			_tmpData = _boxes[ id ].getData( )[ "blog_comment" ];
 
 			tmplt.applyBindings( _tmpData );
 		};
@@ -171,44 +230,33 @@
 	        	cache[ "wli" ] = node.firstChild.cloneNode( true );
 	        }
 	            
+	        function getData( o ) {
+
+	        	return o;
+	        }
+
+	        function setData( o, v ) {
+
+	        	o["blog_comment"] = v;
+	        }
+
 	        if( node ) {
 	                
 	        	nPar = node; 
 	            
-	        	emptyList( nPar );
+	        	emptyNode( nPar );
 
 	            node = cache[ "wli"].cloneNode( true );
 	                
 	            x$( nPar ).insertLast( node );
 
-	            var t = new x$.template( node );
+	            var t = new x$.template( node, {key:"blog_comment_id", getData:getData, setData:setData} );
 	        
-	            t.applyBindings( data );
+	            _boxes = t.applyBindings( data );
 	        }
 		}
 
-		function getComment( key, id ) {
-
-			var data = undefined;
-
-			function filter( val ) {
-
-				if ( val[key] == id ) {
-
-					return true;
-				}
-
-				return false;
-			}
-
-			data = x$.filter( _data["comments"], filter );
-
-			data = data[ 0 ];
-
-			return data;
-		}
-
-		function emptyList( l ) {
+		function emptyNode( l ) {
 			
 			while ( l.firstChild ) {
 

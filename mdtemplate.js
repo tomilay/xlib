@@ -96,11 +96,15 @@
 		return node;
 	}
 
-	var e = function ( elem ) {
+	var e = function ( elem, options ) {
 		
 		var lm = x$( "[data-bind]", elem ).getNode( ),
 			_parent = elem.parentNode,
 			_copy = elem.cloneNode( true ),
+
+			// _boxes facilitates keeping track of any DOM elements created 
+			// while binding to an array 
+			_boxes = { }, 
 
 			// To keep track of elements already appended to the parent
 			// The databind removes an old/template node from the parent 
@@ -154,12 +158,29 @@
 			}
 		}
 
-		// idx is optional.  If included, it appends an index to the template node
+		// idx is included when binding an array.  It appends an index to the template node
 		function bindSingle( data, idx ) {
 
  			var node = addToParent(_copy.cloneNode(true), _parent);
 
-			if ( idx ) node.idx = idx - 1;
+			if ( idx ) {
+				if ( options && options.key ) {
+
+					if ( options.setData && options.getData ){
+					
+						if ( x$.box ) {
+
+							var idBx = new x$.box( node, {getData:options.getData, setData:options.setData} );
+
+							idBx.setData( data );
+
+							_boxes[ data[options.key] ] = idBx;
+						}
+					}
+				}
+
+				node.idx = idx - 1;
+			}
 
 			bindDataToNode( data, node );
 
@@ -177,6 +198,7 @@
 
 					bindRows.call( this, data )
 
+					return _boxes;
 				}else{
 
 					// Remove the template node from the document if present.
