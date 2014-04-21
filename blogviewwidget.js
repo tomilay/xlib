@@ -6,7 +6,7 @@
 // Dependency: mdcore.js, mdtemplates.js, mdverticalbar.js
 //************************************************************************ 	
 
-(function(o) {
+( function(o) {
 	
 	var cache = {};
 	
@@ -59,11 +59,21 @@
 
 		function removeComment ( id ) {
 
-			var data = { blog_comment_id:id }; 
-						
+			if( options.beforeRemoveComment ) {
+				
+				if ( ! options.beforeRemoveComment( ) ) {
+
+					return false;
+				}
+			}
+
+			var data = {};
+			
+			data[ options.comment_key_field ] = id;
+
 			removeEditCommentNodes( );
 
-			_tmpData = _boxes[ id ].getData()[ "blog_comment" ];
+			_tmpData = _boxes[ id ].getData( )[ "blog_comment" ];
 
 			x$.ajax( 
 				{
@@ -78,11 +88,19 @@
 
 		function updateComment( evt ) {
 
+			if( options.beforeUpdateComment ) {
+				
+				if ( ! options.beforeUpdateCommentComment( ) ) {
+
+					return false;
+				}
+			}
+
 			var id = evt.target ? evt.target.id : undefined;
 
 			id = id || ( evt.srcElement ? evt.srcElement.id : undefined );
 
-			var node = x$( "#tmpltEditComment", _boxes[_tmpData["blog_comment_id"]].getData()["node"] ).getNode( );
+			var node = x$( "#tmpltEditComment", _boxes[_tmpData[options.comment_key_field]].getData()["node"] ).getNode( );
 
 			switch( id ) {
 
@@ -99,11 +117,15 @@
 
 				case "btn_submit":
 
-					var form = x$( _formSel, _boxes[_tmpData["blog_comment_id"]].getData()["node"] ).getNode( ),
+					var form = x$( _formSel, _boxes[_tmpData[options.comment_key_field]].getData()["node"] ).getNode( ),
 						data = new x$.template( form ).getData( ),
-						bcid = _boxes[ _tmpData["blog_comment_id"] ].getData( )[ "blog_comment" ]["blog_comment_id"];
+						bcid = _boxes[ _tmpData[options.comment_key_field] ].getData( )[ "blog_comment" ][ options.comment_key_field ];
 
-					data = x$.extend( data, {blog_comment_id:bcid} );
+					var x = {};
+					
+					x[options.comment_key_field] = bcid;
+
+					data = x$.extend( data, x );
 
 					x$.ajax( 
 						{
@@ -148,9 +170,12 @@
 
 		function submitComment ( ) {
 			
-			if( options.beforeSubmit ) {
+			if( options.beforeSubmitComment ) {
 				
-				options.beforeSubmit( );
+				if ( ! options.beforeSubmitComment( ) ) {
+
+					return false;
+				}
 			}
 
 			removeEditCommentNodes( );
@@ -196,7 +221,7 @@
 		function removeCallback ( o ) {
 
 			var data = _data[ "comments" ],
-				node = x$( "#tmpltEditComment", _boxes[_tmpData["blog_comment_id"]].getData()["node"] ).getNode( );
+				node = x$( "#tmpltEditComment", _boxes[_tmpData[options.comment_key_field]].getData()["node"] ).getNode( );
 
 			for( var i = 0; i < data.length; i++ ) {
 
@@ -221,13 +246,13 @@
 			
 			var ra = JSON.parse(o);
 
-			var form = x$( _formSel, _boxes[_tmpData["blog_comment_id"]].getData()["node"] ).getNode( ),
+			var form = x$( _formSel, _boxes[_tmpData[options.comment_key_field]].getData()["node"] ).getNode( ),
 						data = new x$.template( form ).getData( ),
-						node = x$( "#tmpltEditComment", _boxes[_tmpData["blog_comment_id"]].getData()["node"] ).getNode( );	
+						node = x$( "#tmpltEditComment", _boxes[_tmpData[options.comment_key_field]].getData()["node"] ).getNode( );	
 
 			if( ra[0]["rows_affected"] == 1 ) {
 			
-				_tmpData[ "blog_comment_content" ] = data[ "blog_comment_content" ];
+				_tmpData[ options.comment_content_field ] = data[ options.comment_content_field ];
 			}
 
 			if( node ) {
@@ -244,15 +269,15 @@
 		}
 
 		function submitCallback ( o ) {
-			// var data = x$.extend{ {user_id:key["user_id"]}, JSON.parse(o) };
+
 			var deLink = {
-				delete_link:"javascript:bvw.removeComment("+ JSON.parse(o)["blog_comment_id"] +")",
-				edit_link:"javascript:bvw.editComment("+ JSON.parse(o)["blog_comment_id"] +")"
+				delete_link:"javascript:bvw.removeComment("+ JSON.parse(o)[options.comment_key_field] +")",
+				edit_link:"javascript:bvw.editComment("+ JSON.parse(o)[options.comment_key_field] +")"
 			};
+
 			_tmpData = x$.extend(_tmpData, JSON.parse(o) );
 			_tmpData = x$.extend(_tmpData, deLink );
 			_data.comments[ _data.comments.length ] = x$.extend(_tmpData, deLink );
-			// _data.comments[ _data.comments.length ] = x$.extend(_tmpData, JSON.parse(o) );
 
 			updateCommentList( );
 
@@ -304,7 +329,7 @@
 	                
 	            x$( nPar ).insertLast( node );
 
-	            var t = new x$.template( node, {key:"blog_comment_id", getData:getData, setData:setData} );
+	            var t = new x$.template( node, {key:options.comment_key_field, getData:getData, setData:setData} );
 	        
 	            _boxes = t.applyBindings( data );
 	        }
@@ -355,11 +380,9 @@
 		return {
 			initializeBlogView: initializeBlogView,
 			removeComment: removeComment,
-			editComment: editComment,
-			setUser : setUser,
-			setBlog : setBlog
+			editComment: editComment
 		};
 	};
 
 	o.blogviewwidget = o.blogviewwidget || e;
-}(x$));
+}(x$) );
