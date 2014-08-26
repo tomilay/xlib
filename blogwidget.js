@@ -3,7 +3,7 @@
 //	
 // 	Supported browsers: IE8, Chrome, FireFox, Safari, Opera
 // 
-// Dependency: mdcore.js, mdtemplates.js, mdverticalbar.js
+// Dependency: mdcore.js, mdtemplates.js, verticalbar.js
 //************************************************************************ 	
 
 (function(o) {

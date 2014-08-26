@@ -33,7 +33,14 @@
 			return "array";
 
 		if ( inpt.type )
-			return "type";
+			// process label as tagName for IE8
+			if( inpt.tagName && inpt.tagName == "LABEL" ) {
+
+				return "tagName";
+			} else {
+			
+				return "type";
+			}
 
 		if ( inpt.tagName ) 
 			return "tagName";
