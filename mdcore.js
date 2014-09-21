@@ -1062,23 +1062,23 @@ if (typeof Object.create !== 'function') {
 	// ************************************************************************
 	x$.animate = function ( opts ) {
    
-  		var start = new Date ,
+  		var start = new Date() ,
   			id = setInterval( function() {
 
-    		var timePassed = new Date - start,
-    			progress = timePassed / opts.duration;
- 
-    		if ( progress > 1 ) progress = 1;
-     
-    		var delta = opts.delta( progress );
-			
-    		opts.step( delta );
-     
-    		if ( progress == 1 ) {
+		    		var timePassed = new Date - start,
+		    			progress = timePassed / opts.duration;
+		 
+		    		if ( progress > 1 ) progress = 1;
+		     
+		    		var delta = opts.delta( progress );
+					
+		    		opts.step( delta );
+		     
+		    		if ( progress == 1 ) {
 
-      			clearInterval( id );
-    		}
-  		}, opts.delay || 10 );
+		      			clearInterval( id );
+		    		}
+	  		}, opts.delay || 10 );
 	};
 
 	// **********************************************************************************************
